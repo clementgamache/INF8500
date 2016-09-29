@@ -1,7 +1,27 @@
 package uart_test_classes;
+typedef enum {br_9600=9600, br_19200=19200, br_115200=115200, br_153600=153600, br_921600=921600} Valid_baudrate;
+typedef enum {NONE=0, EVEN=1, ODD=3} Valid_parity;
 int err_num = 0; // comptage des erreurs
 
-        // Pilote du périphérique côté bus
+//configuration du UART
+class Uart_config;
+	rand Valid_baudrate baudrate;
+	rand Valid_parity parity;
+	
+	function new();
+      this.baudrate = br_9600;
+	  this.parity = NONE;
+   endfunction : new
+	
+	function report(); 
+		$display("Baudrate: %d\n Parity: %d\n", baudrate, parity);
+	endfunction
+	
+	
+endclass : Uart_config
+
+
+// Pilote du périphérique côté bus
 class Uart_driver;
    time Tck = 20000ps;
    local virtual if_to_Uart bfm;
@@ -50,19 +70,19 @@ class Uart_driver;
 // et de la fréquence d'horloge), réinitialise le
 // périphérique et fixe le protocole choisi (control)
 // ici : sans traitement d'erreurs
-   task init_uart(bit[31:0] baud_rate, time Tck,
-                  bit[7:0] control);
+   task init_uart(Uart_config uart_config, time Tck);
       automatic bit[15:0] diviseur;
-      diviseur = 1e12/(8*baud_rate*Tck) - 1;
+      diviseur = 1e12/(8*uart_config.baudrate*Tck) - 1;
       // unite de temps ps => 1e12
       $display("diviseur = %d\n",diviseur);
       this.Tck = Tck;
-      this.control = control;
+      this.control = 3 + (uart_config.parity << 3);
+	  $display("control = %d\n",this.control);
       bfm.reset_if();
       bfm.write_if(2,diviseur & 8'hff); // baud rate LS
       bfm.write_if(3,diviseur >> 8); // baud rate MS
-      bfm.write_if(1, control); 
-   endtask : init_uart   
+      bfm.write_if(1,this.control); 
+   endtask : init_uart
  
    task run();
 // Cette boucle traite en continu les interruptions
@@ -79,7 +99,6 @@ class Uart_driver;
 // interruption en écriture : si des données sont prêtes 
 // elles sont envoyées, le test n'est pas bloquant 
         if(status[5] == 1&&write_m.try_get(write_dat)>0)begin
-// Dernière donnée à transmettre
 		   if (method == 0) begin
 				test_read.put(write_dat);
 		   end else begin
@@ -87,13 +106,15 @@ class Uart_driver;
 		   end
 		   $display("Driver[%s]: %d", (method == 0 ? "read" : "write"), write_dat);
 		   method = (method + 1) % 2;
+
+			// Dernière donnée à transmettre
            if (write_m.num()==1)begin
               control[1]=0; 
-           // inhibe les interruptions en transmission
-              bfm.write_if(1, control); 
-              end           
-           bfm.write_if(0,write_dat);
-           end 
+			  // inhibe les interruptions en transmission
+              //bfm.write_if(1, control); 
+           end           
+		   bfm.write_if(0,write_dat);
+        end 
 		   
 // Traitement des erreurs de transmission
         if(status[1] == 1) begin
@@ -167,19 +188,19 @@ class Uart_receiver;
 // et de la fréquence d'horloge), réinitialise le
 // périphérique et fixe le protocole choisi (control)
 // ici : sans traitement d'erreurs
-	task init_uart(bit[31:0] baud_rate, time Tck,
-			  bit[7:0] control);
-	automatic bit[15:0] diviseur;
-	diviseur = 1e12/(8*baud_rate*Tck) - 1;
-	// unite de temps ps => 1e12
-	$display("diviseur = %d\n",diviseur);
-	this.Tck = Tck;
-	this.control = control;
-	bfm.reset_if();
-	bfm.write_if(2,diviseur & 8'hff); // baud rate LS
-	bfm.write_if(3,diviseur >> 8); // baud rate MS
-	bfm.write_if(1, control); 
-	endtask : init_uart  
+	task init_uart(Uart_config uart_config, time Tck);
+      automatic bit[15:0] diviseur;
+      diviseur = 1e12/(8*uart_config.baudrate*Tck) - 1;
+      // unite de temps ps => 1e12
+      $display("diviseur = %d\n",diviseur);
+      this.Tck = Tck;
+      this.control = 3 + (uart_config.parity << 3);
+	  $display("control = %d\n",this.control);
+      bfm.reset_if();
+      bfm.write_if(2,diviseur & 8'hff); // baud rate LS
+      bfm.write_if(3,diviseur >> 8); // baud rate MS
+      bfm.write_if(1,this.control); 
+   endtask : init_uart
 
    task run();
 // Cette boucle traite en continu les interruptions
@@ -237,7 +258,8 @@ class Uart_write;
          #($urandom_range(40e6)); 
         // retard aléatoire en picosecondes
       end //repeat
-      #200ms; // Mise en someil du générateur
+      #20ms; // Mise en someil du générateur
+	  $display("end write");
    endtask : run
 endclass : Uart_write
 
@@ -271,11 +293,13 @@ class Uart_check;
 			$display("Check[%s]: %d", (method == 0 ? "read" : "write"), rec_dat);
 		    
             else begin
-               $display("erreur !");
+               $display("erreur : test = %d / recept = %d", test_dat, rec_dat);
                err_num +=1;
-               end
+            end
 		    method = (method + 1) % 2;
+			#2;
       end //repeat
+	  $display("end check");
    endtask : run
    
    function void bilan();
