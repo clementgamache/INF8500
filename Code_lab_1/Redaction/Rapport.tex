@@ -30,6 +30,7 @@
         \newcommand{\theDut}{Uart }
         \newcommand{\uconfig}{Uart\_config }
         \newcommand{\refToStep}[2]{\hyperref[#1]{Étape \ref{#1}: #2}}
+        \newcommand{\mss}{millisecondes }
 % % % % % % % Fin des commandes % % % % % %
 
 \title{\Poly \\ \SigleCours --- \NomCours\\ \emph{TP1} }
@@ -112,15 +113,55 @@ Clément Gamache & 1642792 \\
     \subsection{Test de transmission}
         \lipsum[1]
     \subsection{Test de réception}
-        \lipsum[1]
+    % TODO
+        Plusieurs problèmes ont été recontrés:
+        \begin{itemize}
+        \item Création et transfert de l'interface
+        \item Synchronisation entre les UART et les mailbox (utilisation de sémaphore) + une nouvelle mailbox entre \udriver et \ucheck.
+        \item Connexion entre les deux UART
+        \end{itemize}
 
 \section{Amélioration de la génération aléatoire} 
-    \subsection{Création de la classe \uconfig} \lipsum[2]
-    \subsection{Contenu de la classe \uconfig} \lipsum[2]
-    \subsection{Modification de l'initialisation des modules} \lipsum[2]
-    \subsection{Modification du programme de test} \lipsum[2]
-    \subsection{Vérification du changement de parité} \lipsum[2]
-    \subsection{Méchanisme de génération aléatoire} \lipsum[2]
+    \subsection{Création de la classe \uconfig} 
+    La création de la classe \uconfig a été facile. La création de l'objet dans le programme de test est possible à partir de la méthode new(). Cette dernière mets des valeurs par défaut dans les membres de classe (qui sont décrits dans la prochaine section).
+
+    Une subtilité à prendre en compte, qui est cependant expliquée dans la documentation, est la façon dont il faut déclarer les membres de la classe. En effet, afin que l'appel à randomize() change la valeur des attributs, il faut que ces derniers soient définis comme rand ; le type des attributs doit être précédé par "rand".
+    
+    \subsection{Contenu de la classe \uconfig}
+    Des membres de type enum ont été ajoutés dans la classe de configuration. Un comportement intéressant de la fonction randomize() appliquée sur des enums est le fait qu'une valeur aléatoire est choisie parmi les valeurs possibles de la structure. Ainsi, randomize() appliquée sur un enum avec quatre possibilités retourne toujours une de ces quatre possibilités.
+    \subsection{Modification de l'initialisation des modules} 
+    Puisque les configurations affectent la vitesse de transmission, il fallait que \udriver puisse avoir accès à cette nouvelle information. Dans la fonction d'initialisation de \udriver, une classe qui contient la configuration est passée en paramètre. C'est \udriver qui est en charge d'écrire sa configuration dans la mémoire. Un simple décalage binaire de trois (afin d'écrire dans le troisième bit[il s'agit du bit de configuration de la parité]) suffit.
+
+    
+    \subsection{Modification du programme de test}
+    Dans le code initial, une seule exécution des modules étaient faite. C'est-à-dire que le testbench finissait quand l'un des modules avait terminer. Afin de faire plusieurs types de configuration, nous avons choisi d'englober le tout dans un block repeat. Bien entendu, les configurations étaient changées à chaque itération à l'aide de randomize().
+
+    La création des modules a été bougée avant le bloc repeat, car il s'agissait de destruction et création de modules inutiles. En effet, il suffit dans notre cas que d'appeler la nouvellement modifiée méthode d'initialisation afin de changer la configuration des modules.
+    
+    Après avoir fait cette modification, un autre problème survint : les temps d'éxecution de chaque boucle était considérablement long. En effet, dans le code précédent, \uwriter attendait 200 ms avant de terminer. Nous avons donc réduit cette valeur à 20 ms. 
+
+    Par la suite, des problèmes de synchronisation furent détectées. Après avoir analysé les sorties sur la console des différentes valeurs testées dans les mailboxs, il nous apparut que lorsqu'une boucle du repeat était terminée, les mailbox n'étaient pas vidées. Par exemple, pour la deuxième configuration testée, la première valeur lue par \ucheck correspondait à l'avant dernière donnée envoyée par \udriver dans l'itération précédente. À premier regard, le fait de vider les mailbox serait suffisant, mais cela ne permettrait pas à \ucheck de recevoir les dernières données envoyées. Il fut donc déterminé qu'il fallait attendre que \ucheck ait reçu toutes les données envoyées (c'est d'ailleurs la raison de l'existence de l'attente de 200 ms dans le code original). Un fork avec une attente complète (join / join-all )a donc été imbriqué dans le programme de test sur \uwriter et \ucheck (\udriver et le receiver roulent à l'infini). 
+
+
+    \subsection{Vérification du changement de parité} 
+     % Screenshot
+	\begin{center}
+	  \label{random:parity}
+          \includegraphics[ width= \textwidth]{parity.png}
+	  \captionof{figure}{Mise en évidence de la parité}
+	\end{center}
+	% Fin screenshot
+        Comme il est possible de voir à la \hyperref[random:parity]{figure \ref{random:parity}}, le bit de parité (index 3) est mis à 1, ce qui indique une activation de la parité.
+    \subsection{Méchanisme de génération aléatoire}
+    En effet, il a été remarqué qu'à travers les multiples simulations, les mêmes valeurs apparaissaient. Il s'agit de TODO. Il s'agit d'un mécanisme très intéressant dans le cadre de la vérification car les mêmes ensembles de données sont utilisées : si un problème est détecté dans l'un de ensembles, il est possible de relancer la simulation et d'obtenir exactement le même problème pour le même ensemble. Si les données étaient réellement aléatoires, obtenir de nouveau le problème serait une question de chance. Ceci facilite énormément le travail des personnes qui font la vérification, car reproduire le problème est parfois un long trajet.
+
+    Il est possible de le faire en changeant la graine du simulateur (qui détermine la graine des modules) :
+
+    \texttt{sim switch -sv\_seed [value]}
+    
+    Même si le testbench change, les valeurs aléatoires restent les même. En effet, ce n'est pas la compilation qui change la génération de nombre : il s'agit de la graine de génération. Cette graine est spécifique à la simulation. Comme précédemment expliqué, il s'agit d'une trés bonne fonctionnalité car elle assure la reproductibilité de la simulation. Il est par ailleurs possible de changer cette grain entre les simulations.
+    
+    % http://www.doulos.com/knowhow/sysverilog/SNUG13_random_stability/SNUG2013_SV_Random_Stability_paper.pdf
 
 \section{Injection d'erreurs} 
     \subsection{Injection du Parity Error} \lipsum[3]
