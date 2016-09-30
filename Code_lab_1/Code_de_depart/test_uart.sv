@@ -34,7 +34,6 @@ program test_uart #(time Tck = 20000ps) (if_to_Uart bfm, bfm_com);
 	  
 	  //init des UARTS
       uart_driver.init_uart(uart_config, Tck);
-      uart_receiver.init_uart(uart_config, Tck);
 	  
 	  //init du semaphore de synchronisation
 	  sem_receiver_done.try_get();

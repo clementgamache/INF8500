@@ -32,7 +32,7 @@ endclass : Uart_config
 // Pilote du périphérique côté bus
 class Uart_driver;
    time Tck = 20000ps;
-   local virtual if_to_Uart bfm, bfm_com;
+   local virtual if_to_Uart bfm, bfm_com, used_bfm;
    static logic  [7:0] status, control;
    logic [7:0] write_dat;
    logic method;
@@ -93,6 +93,11 @@ class Uart_driver;
       bfm.write_if(2,diviseur & 8'hff); // baud rate LS
       bfm.write_if(3,diviseur >> 8); // baud rate MS
       bfm.write_if(1,this.control); 
+	  
+      bfm_com.reset_if();
+      bfm_com.write_if(2,diviseur & 8'hff); // baud rate LS
+      bfm_com.write_if(3,diviseur >> 8); // baud rate MS
+      bfm_com.write_if(1,this.control); 
    endtask : init_uart
  
    task run();
@@ -104,12 +109,13 @@ class Uart_driver;
 			envoi.get(method);
 			envoi.get(write_dat);
 			mailbox_method.put(method); //0 is read // 1 is write
+			used_bfm = method==0 ? bfm_com : bfm;
 			waiting = 1;
 		end
 		
-		if (method == 0) begin //read (fil vert)
-			bfm_com.wait_it();
-			bfm_com.read_if(1,status);
+		
+			used_bfm.wait_it();
+			used_bfm.read_if(1,status);
 	/*      assert(!$isunknown(status))else begin
 			   $error("status inconnu");
 			   err_num +=1;
@@ -121,7 +127,7 @@ class Uart_driver;
 			if(status[5] == 1)begin
 				test.put(method);
 				test.put(write_dat);
-				bfm_com.write_if(0,write_dat);
+				used_bfm.write_if(0,write_dat);
 				$display("Driver[%s] : %d", (method == 0)? "read" : "write", write_dat);
 				waiting = 0;
 				
@@ -143,39 +149,7 @@ class Uart_driver;
 			if(status[3] == 1) begin
 			   $display("à %t, Framing error ",$time);
 			   end
-		end else begin
-			bfm.wait_it();
-			bfm.read_if(1,status);
-
-			cg.sample();
-			// interruption en écriture : si des données sont prêtes 
-			// elles sont envoyées, le test n'est pas bloquant 
-			if(status[5] == 1)begin
-				test.put(method);
-				test.put(write_dat);
-				bfm.write_if(0,write_dat);
-				$display("Driver[%s] : %d", (method == 0)? "read" : "write", write_dat);
-				waiting = 0;
-				
-				// Dernière donnée à transmettre
-				/*if (write_m.num()==1)begin
-					control[1]=0; 
-					// inhibe les interruptions en transmission
-					bfm.write_if(1, control); 
-				end  */
-			end
-			   
-			// Traitement des erreurs de transmission
-			if(status[1] == 1) begin
-			   $display("à %t, Overrun error ",$time);
-			   end
-			if(status[2] == 1) begin
-			   $display("à %t, Parity error ",$time);
-			   end
-			if(status[3] == 1) begin
-			   $display("à %t, Framing error ",$time);
-			   end
-		end
+		
 	 end //forever
    endtask : run 
 
@@ -239,23 +213,6 @@ class Uart_receiver;
 		this.sem_receiver_done = sem_receiver_done;
 	endfunction : new
        
-// calcule le prédiviseur (en fonction de la vitesse choisie 
-// et de la fréquence d'horloge), réinitialise le
-// périphérique et fixe le protocole choisi (control)
-// ici : sans traitement d'erreurs
-	task init_uart(Uart_config uart_config, time Tck);
-      automatic bit[15:0] diviseur;
-      diviseur = 1e12/(8*uart_config.baudrate*Tck) - 1;
-      // unite de temps ps => 1e12
-      $display("diviseur = %d",diviseur);
-      this.Tck = Tck;
-      this.control = 3 + (uart_config.parity << 3);
-	  $display("control = %d\n",this.control);
-      bfm_com.reset_if();
-      bfm_com.write_if(2,diviseur & 8'hff); // baud rate LS
-      bfm_com.write_if(3,diviseur >> 8); // baud rate MS
-      bfm_com.write_if(1,this.control); 
-   endtask : init_uart
 
    task run();
 // Cette boucle traite en continu les interruptions
