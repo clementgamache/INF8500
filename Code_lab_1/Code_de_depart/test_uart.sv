@@ -6,32 +6,39 @@ program test_uart #(time Tck = 20000ps) (if_to_Uart bfm, bfm_com);
    Uart_write uart_write ;
    Uart_check uart_check ;
    Uart_rxtx uart_rxtx;
+   
    mailbox envoi = new();
    
-   mailbox recept_write = new();
-   mailbox test_write = new();
+   mailbox recept = new();
+   mailbox test = new();
+ 
+   mailbox mailbox_method = new();
    
-   mailbox test_read = new();
-   mailbox recept_read = new();
+   semaphore sem_receiver_done = new(1);
    
    initial begin
-      uart_rxtx = new(bfm, bfm_com);
+       uart_rxtx = new(bfm, bfm_com);
        uart_rxtx.run();
    end
   
    initial begin
   uart_config = new();
-  uart_driver = new(bfm, envoi, test_read, test_write);
-  uart_receiver = new (bfm_com, recept_read, recept_write);
+  uart_driver = new(bfm, bfm_com, envoi, test, mailbox_method, sem_receiver_done);
+  uart_receiver = new (bfm, bfm_com, recept, mailbox_method, sem_receiver_done);
   uart_write = new(envoi);
-  uart_check = new(recept_read, recept_write, test_read, test_write);
+  uart_check = new(test, recept);
    repeat(5) begin
 	  $display("*************** begin simulation ***************\n");
 	  uart_config.randomize();
 	  uart_config.report();
 	  
+	  //init des UARTS
       uart_driver.init_uart(uart_config, Tck);
       uart_receiver.init_uart(uart_config, Tck);
+	  
+	  //init du semaphore de synchronisation
+	  sem_receiver_done.try_get();
+	  sem_receiver_done.put();
 	  
       // 153600 bauds, Tx Rx int enable, error disable, sans parite
       fork : test_simple

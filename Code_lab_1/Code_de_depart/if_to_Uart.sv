@@ -1,4 +1,4 @@
-// interface entre module Uart et test bench
+ // interface entre module Uart et test bench
 interface if_to_Uart (input bit clk) ;
    logic       we, ce, rx, tx, inter, arst;
    logic [1:0] adr;
