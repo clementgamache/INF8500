@@ -19,10 +19,11 @@ class Uart_config;
 	function new();
       this.baudrate = br_9600;
 	  this.parity = NONE;
+	  this.error = noError;
    endfunction : new
 	
 	function report();
-		$display("Baudrate: %d\n Parity: %d\n", baudrate, parity);
+		$display("Baudrate: %d\n Parity: %d\nError type : %d\n", baudrate, parity, error);
 	endfunction
 	
 	
@@ -36,7 +37,8 @@ class Uart_driver;
    static logic  [7:0] status, control;
    logic [7:0] write_dat;
    logic method;
-   mailbox envoi, test, mailbox_method;
+   Uart_config uart_config;
+   mailbox envoi, test, err_rxtx, mailbox_method;
    semaphore sem_receiver_done;
    
    bit waiting = 0;
@@ -68,13 +70,14 @@ class Uart_driver;
    cg = new;
    
    function new(virtual if_to_Uart bfm, bfm_com,
-                mailbox envoi, test, mailbox_method, semaphore sem_receiver_done);
+                mailbox envoi, test, err_rxtx, mailbox_method, semaphore sem_receiver_done);
       this.bfm = bfm;
 	  this.bfm_com = bfm_com;
       this.envoi = envoi;
       this.test = test;
 	  this.mailbox_method = mailbox_method;
 	  this.sem_receiver_done = sem_receiver_done;
+	  this.err_rxtx = err_rxtx;
    endfunction : new
    
 // calcule le prédiviseur (en fonction de la vitesse choisie 
@@ -84,6 +87,7 @@ class Uart_driver;
    task init_uart(Uart_config uart_config, time Tck);
       automatic bit[15:0] diviseur;
       diviseur = 1e12/(8*uart_config.baudrate*Tck) - 1;
+	  this.uart_config = uart_config;
       // unite de temps ps => 1e12
       $display("diviseur = %d",diviseur);
       this.Tck = Tck;
@@ -103,6 +107,7 @@ class Uart_driver;
    task run();
 // Cette boucle traite en continu les interruptions
 // la synchronisation se fait sur le matériel (signal inter)
+	int c;
      forever begin
 		if (!waiting) begin
 			sem_receiver_done.get();
@@ -127,6 +132,12 @@ class Uart_driver;
 			if(status[5] == 1)begin
 				test.put(method);
 				test.put(write_dat);
+				if (method == 0) begin
+					err_rxtx.put(uart_config.error);
+					c = ({$random()}%8) + 1;
+					$display("c = %d",c);
+					err_rxtx.put(c);
+				end
 				used_bfm.write_if(0,write_dat);
 				$display("Driver[%s] : %d", (method == 0)? "read" : "write", write_dat);
 				waiting = 0;
@@ -344,21 +355,105 @@ endclass : Uart_check
 
         // Traitement des signaux du côté série
 class Uart_rxtx;
-   local virtual if_to_Uart bfm, bfm_com;
-
-   function new(virtual if_to_Uart bfm, bfm_com);
-      this.bfm = bfm;
-	  this.bfm_com = bfm_com;
+   local virtual if_to_Uart dut_uart;
+   local virtual if_to_Uart reference_uart;
+   time divisor = 20000ps;
+   Error_cfg err;
+   mailbox err_rxtx;
+   int data_bit_to_change = 0;
+   
+   function new(virtual if_to_Uart bfm, virtual if_to_Uart reference, mailbox err_rxtx);
+      this.dut_uart = bfm;
+      this.reference_uart = reference;
+      this.err_rxtx = err_rxtx;
    endfunction : new
    
+   function init(Uart_config uart_config );
+	  case (uart_config.baudrate)
+			br_9600 : begin
+						 this.divisor = 104160000;
+					  end
+			br_19200 : begin
+						 this.divisor = 52160000;
+					  end
+			br_115200 : begin
+						 this.divisor = 8640000;
+					  end
+			br_153600 : begin
+						 this.divisor = 6560000;
+					  end
+			br_921600 : begin
+						 this.divisor = 1120000;
+					  end
+	  endcase
+	  $display("     rxtx : attente de %d ns", this.divisor);
+ 	  this.err = uart_config.error;
+   endfunction : init
+   
+// Autres fonctions au besoin
+   
    task run();
-	  fork: pont
-		forever @(bfm.cb.tx) bfm_com.cb.rx <= bfm.cb.tx;
-        forever @(bfm_com.cb.tx) bfm.cb.rx <= bfm_com.cb.tx; 
-      join_any;
-	  
-     // test loop back 
+     // Test pont entre les UART
+     fork: pont
+		forever @(dut_uart.cb.tx) reference_uart.cb.rx <= dut_uart.cb.tx; //fil orange
+        uart_tx_to_dut_rx();											  //fil vert
+     join_any;
    endtask : run
+   
+   // Tache de pont vers la reception DUT
+   // Implemente une machine a etat afin d'injecter des erreur aleatoires
+   task uart_tx_to_dut_rx();
+     bit output_tx_bit = 1;
+       
+     //$display("bit %b, Initial ", reference_uart.cb.tx);
+     dut_uart.cb.rx <= output_tx_bit;
+    
+     forever begin
+        err_rxtx.get(err);
+        err_rxtx.get(data_bit_to_change);
+		
+        @(negedge reference_uart.cb.tx);
+        
+        dut_uart.cb.rx <= reference_uart.cb.tx;
+        //$display("bit %b, Start ", reference_uart.cb.tx);
+        
+        for ( int count = 1; count <= 10 ; count++ ) begin
+          #(this.divisor);
+          
+          output_tx_bit = reference_uart.cb.tx;
+          
+          case (this.err)
+            
+            pError : begin
+                      // Parity error
+					  if (count == 9) begin
+						output_tx_bit = ~output_tx_bit;
+					  end
+                    end
+                    
+            fError : begin
+                        // Frame error
+					  if (count == data_bit_to_change) begin
+						#(this.divisor);
+					  end
+                     end
+                     
+            dError : begin
+                      // Data error
+					  if (count == data_bit_to_change) begin
+						output_tx_bit = ~output_tx_bit;
+					  end
+                     end
+          endcase
+          $display("     rxtx : ecriture de %d", output_tx_bit);
+          dut_uart.cb.rx <= output_tx_bit;
+          
+        end // for
+		
+        this.err = noError;
+		
+    end // forever
+   endtask : uart_tx_to_dut_rx
    
 endclass : Uart_rxtx
 
