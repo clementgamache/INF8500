@@ -2,6 +2,7 @@ package uart_test_classes;
 typedef enum {br_9600=9600, br_19200=19200, br_115200=115200, br_153600=153600, br_921600=921600} Valid_baudrate;
 typedef enum {NONE=0, EVEN=1, ODD=3} Valid_parity;
 typedef enum {noError, pError, fError, dError} Error_cfg;
+
 //noError = pas d’erreur injectée 
 //et 3 types d’erreurs injectées 
 //pError = erreur sur le bit  
@@ -16,14 +17,24 @@ class Uart_config;
 	rand Valid_parity parity;
 	rand Error_cfg error;
 	
+	covergroup cg;
+		option.per_instance = 1;
+		bd : coverpoint baudrate;
+		err : coverpoint error;
+		cross bd, err;
+	endgroup
+	cg = new;
+	
 	function new();
-      this.baudrate = br_9600;
-	  this.parity = NONE;
-	  this.error = noError;
-   endfunction : new
+		this.baudrate = br_9600;
+		this.parity = NONE;
+		this.error = noError;
+	endfunction : new
 	
 	function report();
-		$display("Baudrate: %d\n Parity: %d\nError type : %d\n", baudrate, parity, error);
+		$display("Baudrate: %d", baudrate);
+		$display("Parity: %s", (parity == 0)? "NONE" : (parity == 1) ? "EVEN" : "ODD");
+		$display("Error type: %s\n", (error == 0)? "no err" : (error == 1) ? "parity err" : (error == 2) ? "framing err" : "data error");
 	endfunction
 	
 	
@@ -42,32 +53,6 @@ class Uart_driver;
    semaphore sem_receiver_done;
    
    bit waiting = 0;
-   
-   covergroup cg;
-      status : coverpoint status {
-         wildcard bins Rx    = {8'b???????1};
-         wildcard bins Tx    = {8'b??1?????};
-         wildcard bins O_err = {8'b??????1?};
-         wildcard bins P_err = {8'b?????1??};
-         wildcard bins F_err = {8'b????1???};
-         bins vide =   default ;
-    }
-   endgroup
-/*   covergroup cg;
-      status : coverpoint status {
-         wildcard bins Rx    = {8'b???????1};
-         wildcard bins Tx    = {8'b??1?????};
-         wildcard bins O_err = {8'b??????1?};
-         wildcard bins P_err = {8'b?????1??};
-         wildcard bins F_err = {8'b????1???};
-         bins vide =   default ;}
-      Rx    : coverpoint status[0] == 1;
-      Tx    : coverpoint status[5] == 1;
-      O_err : coverpoint status[1] == 1;
-      P_err : coverpoint status[2] == 1;
-      F_err : coverpoint status[3] == 1;
-   endgroup*/
-   cg = new;
    
    function new(virtual if_to_Uart bfm, bfm_com,
                 mailbox envoi, test, err_rxtx, mailbox_method, semaphore sem_receiver_done);
@@ -91,7 +76,7 @@ class Uart_driver;
       // unite de temps ps => 1e12
       $display("diviseur = %d",diviseur);
       this.Tck = Tck;
-      this.control = 3 + (uart_config.parity << 3);
+      this.control = 7 + (uart_config.parity << 3);
 	  $display("control = %d\n",this.control);
       bfm.reset_if();
       bfm.write_if(2,diviseur & 8'hff); // baud rate LS
@@ -119,60 +104,50 @@ class Uart_driver;
 		end
 		
 		
-			used_bfm.wait_it();
-			used_bfm.read_if(1,status);
-	/*      assert(!$isunknown(status))else begin
-			   $error("status inconnu");
-			   err_num +=1;
-			   $stop();
-			   end*/
-			cg.sample();
-			// interruption en écriture : si des données sont prêtes 
-			// elles sont envoyées, le test n'est pas bloquant 
-			if(status[5] == 1)begin
-				test.put(method);
-				test.put(write_dat);
-				if (method == 0) begin
-					err_rxtx.put(uart_config.error);
-					c = ({$random()}%8) + 1;
-					$display("c = %d",c);
-					err_rxtx.put(c);
-				end
-				used_bfm.write_if(0,write_dat);
-				$display("Driver[%s] : %d", (method == 0)? "read" : "write", write_dat);
-				waiting = 0;
-				
-				// Dernière donnée à transmettre
-				/*if (write_m.num()==1)begin
-					control[1]=0; 
-					// inhibe les interruptions en transmission
-					bfm_com.write_if(1, control); 
-				end  */
+		used_bfm.wait_it();
+		used_bfm.read_if(1,status);
+		
+/*      assert(!$isunknown(status))else begin
+		   $error("status inconnu");
+		   err_num +=1;
+		   $stop();
+		   end*/
+
+		// interruption en écriture : si des données sont prêtes 
+		// elles sont envoyées, le test n'est pas bloquant 
+		if(status[5] == 1)begin
+			test.put(method);
+			test.put(write_dat);
+			if (method == 0) begin
+				err_rxtx.put(uart_config.error);
+				c = ({$random()}%8) + 1; //numéro du bit à inverser (utilisé dans le cas de dataError)
+				err_rxtx.put(c);
 			end
-			  
-			// Traitement des erreurs de transmission
-			if(status[1] == 1) begin
-			   $display("à %t, Overrun error ",$time);
-			   end
-			if(status[2] == 1) begin
-			   $display("à %t, Parity error ",$time);
-			   end
-			if(status[3] == 1) begin
-			   $display("à %t, Framing error ",$time);
-			   end
+			used_bfm.write_if(0,write_dat);
+			$display("Driver[%s] : %d", (method == 0)? "read" : "write", write_dat);
+			waiting = 0;
+			
+			// Dernière donnée à transmettre
+			/*if (write_m.num()==1)begin
+				control[1]=0; 
+				// inhibe les interruptions en transmission
+				bfm_com.write_if(1, control); 
+			end  */
+		end
+		  
+		// Traitement des erreurs de transmission
+		if(status[1] == 1) begin
+		   $display("à %t, Overrun error ",$time);
+		   end
+		if(status[2] == 1) begin
+		   $display("à %t, Parity error ",$time);
+		   end
+		if(status[3] == 1) begin
+		   $display("à %t, Framing error ",$time);
+		   end
 		
 	 end //forever
-   endtask : run 
-
-   task stats;
-         $display(" couverture :");
-   /*      $display("Tx = %g  Rx = %g  O_err = %g  P_err = %g  F_err = %g ",
-                  cg.Rx.get_inst_coverage(),cg.Tx.get_inst_coverage(),
-                  cg.O_err.get_inst_coverage(),cg.P_err.get_inst_coverage(),
-                  cg.F_err.get_inst_coverage()); 
-           $display("status = %p ", cg.status);*/ 
-         $display("status = %g ", cg.status.get_inst_coverage()); 
-   endtask : stats
+   endtask : run
 
 endclass : Uart_driver
 
@@ -180,7 +155,7 @@ endclass : Uart_driver
 class Uart_receiver;
     time Tck = 20000ps;
     local virtual if_to_Uart bfm, bfm_com;
-	static logic  [7:0] status, control;
+	static logic  [7:0] status_dut, status_com, control;
 	logic [7:0] read_dat;
 	logic method;
 	mailbox recept, mailbox_method;
@@ -189,29 +164,24 @@ class Uart_receiver;
 	bit waiting = 0;
 	
 	covergroup cg;
-      status : coverpoint status {
-         wildcard bins Rx    = {8'b???????1};
-         wildcard bins Tx    = {8'b??1?????};
-         wildcard bins O_err = {8'b??????1?};
-         wildcard bins P_err = {8'b?????1??};
-         wildcard bins F_err = {8'b????1???};
-         bins vide =   default ;
-    }
+		status_dut : coverpoint status_dut {
+			wildcard bins Rx    = {8'b???????1};
+			wildcard bins Tx    = {8'b??1?????};
+			wildcard bins O_err = {8'b??????1?};
+			wildcard bins P_err = {8'b?????1??};
+			wildcard bins F_err = {8'b????1???};
+			bins vide =   default ;
+		}
+		
+		status_com : coverpoint status_com {
+			wildcard bins Rx    = {8'b???????1};
+			wildcard bins Tx    = {8'b??1?????};
+			wildcard bins O_err = {8'b??????1?};
+			wildcard bins P_err = {8'b?????1??};
+			wildcard bins F_err = {8'b????1???};
+			bins vide =   default ;
+		}
    endgroup
-/*   covergroup cg;
-      status : coverpoint status {
-         wildcard bins Rx    = {8'b???????1};
-         wildcard bins Tx    = {8'b??1?????};
-         wildcard bins O_err = {8'b??????1?};
-         wildcard bins P_err = {8'b?????1??};
-         wildcard bins F_err = {8'b????1???};
-         bins vide =   default ;}
-      Rx    : coverpoint status[0] == 1;
-      Tx    : coverpoint status[5] == 1;
-      O_err : coverpoint status[1] == 1;
-      P_err : coverpoint status[2] == 1;
-      F_err : coverpoint status[3] == 1;
-   endgroup*/
    cg = new;
 	
 	
@@ -231,23 +201,25 @@ class Uart_receiver;
 	
      forever begin
 		if (!waiting) begin
-			$display("receiver : begin waiting");
 			mailbox_method.get(method);
 			waiting = 1;
 		end
 		
 		if (method == 0) begin //read (fil vert)
 			bfm.wait_it();
-			bfm.read_if(1,status);
+			bfm.read_if(1,status_dut);
 	/*      assert(!$isunknown(status))else begin
 			   $error("status inconnu");
 			   err_num +=1;
 			   $stop();
 			   end*/
-			cg.sample();
+			
+			
 			
 			// Interruption en lecture, données transmises au checker
-			if(status[0] == 1) begin
+			if(status_dut[0] == 1) begin
+				status_com = 8'b00000000;
+				cg.sample();
 				bfm.read_if(0,read_dat);
 				$display("Receiver[%s] : %d", (method == 0)? "read" : "write", read_dat);
 				recept.put(method);
@@ -257,16 +229,17 @@ class Uart_receiver;
 			end
 		end else begin
 			bfm_com.wait_it();
-			bfm_com.read_if(1,status);
+			bfm_com.read_if(1,status_com);
 	/*      assert(!$isunknown(status))else begin
 			   $error("status inconnu");
 			   err_num +=1;
 			   $stop();
 			   end*/
-			cg.sample();
 			
 			// Interruption en lecture, données transmises au checker
-			if(status[0] == 1) begin
+			if(status_com[0] == 1) begin
+				status_dut = 8'b00000000;
+				cg.sample();
 				bfm_com.read_if(0,read_dat);
 				$display("Receiver[%s] : %d", (method == 0)? "read" : "write", read_dat);
 				recept.put(method);
@@ -280,13 +253,13 @@ class Uart_receiver;
    endtask : run 
    
    task stats;
-	 $display(" couverture :");
+	 $display("Couverture de status DUT : %g", cg.status_dut.get_inst_coverage());
+	 $display("Couverture de status COM : %g", cg.status_com.get_inst_coverage());
 /*      $display("Tx = %g  Rx = %g  O_err = %g  P_err = %g  F_err = %g ",
 			  cg.Rx.get_inst_coverage(),cg.Tx.get_inst_coverage(),
 			  cg.O_err.get_inst_coverage(),cg.P_err.get_inst_coverage(),
 			  cg.F_err.get_inst_coverage()); 
 	   $display("status = %p ", cg.status);*/ 
-	 $display("status = %g ", cg.status.get_inst_coverage());
    endtask : stats
 endclass: Uart_receiver
 
@@ -310,7 +283,7 @@ class Uart_write;
          #($urandom_range(40e6)); 
         // retard aléatoire en picosecondes
       end //repeat
-      #20ms; // Mise en someil du générateur
+      #10ms; // Mise en someil du générateur
 	  $display("end write");
    endtask : run
 endclass : Uart_write
@@ -353,7 +326,8 @@ class Uart_check;
 
 endclass : Uart_check
 
-        // Traitement des signaux du côté série
+
+// Traitement des signaux du côté série
 class Uart_rxtx;
    local virtual if_to_Uart dut_uart;
    local virtual if_to_Uart reference_uart;
@@ -368,25 +342,18 @@ class Uart_rxtx;
       this.err_rxtx = err_rxtx;
    endfunction : new
    
+   function time get_bd_ticks(Valid_baudrate bd);
+		case (bd)
+			br_9600 : return 104160000ps;
+			br_19200 : return 52160000ps;
+			br_115200 : return 8640000ps;
+			br_153600 : return 6560000ps;
+			br_921600 : return 1120000ps;
+		endcase
+   endfunction
+   
    function init(Uart_config uart_config );
-	  case (uart_config.baudrate)
-			br_9600 : begin
-						 this.divisor = 104160000;
-					  end
-			br_19200 : begin
-						 this.divisor = 52160000;
-					  end
-			br_115200 : begin
-						 this.divisor = 8640000;
-					  end
-			br_153600 : begin
-						 this.divisor = 6560000;
-					  end
-			br_921600 : begin
-						 this.divisor = 1120000;
-					  end
-	  endcase
-	  $display("     rxtx : attente de %d ns", this.divisor);
+	  this.divisor = get_bd_ticks(uart_config.baudrate);
  	  this.err = uart_config.error;
    endfunction : init
    
@@ -395,8 +362,8 @@ class Uart_rxtx;
    task run();
      // Test pont entre les UART
      fork: pont
-		forever @(dut_uart.cb.tx) reference_uart.cb.rx <= dut_uart.cb.tx; //fil orange
-        uart_tx_to_dut_rx();											  //fil vert
+		forever @(dut_uart.cb.tx) reference_uart.cb.rx <= dut_uart.cb.tx; //fil orange (simple connexion des fils)
+        uart_tx_to_dut_rx();											  //fil vert (avec injection d'erreurs)
      join_any;
    endtask : run
    
@@ -445,7 +412,7 @@ class Uart_rxtx;
 					  end
                      end
           endcase
-          $display("     rxtx : ecriture de %d", output_tx_bit);
+          //$display("     rxtx : ecriture de %d", output_tx_bit);
           dut_uart.cb.rx <= output_tx_bit;
           
         end // for
