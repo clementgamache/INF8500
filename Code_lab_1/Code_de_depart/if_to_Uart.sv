@@ -1,4 +1,4 @@
-// interface entre module Uart et test bench
+ // interface entre module Uart et test bench
 interface if_to_Uart (input bit clk) ;
    logic       we, ce, rx, tx, inter, arst;
    logic [1:0] adr;
@@ -29,6 +29,7 @@ interface if_to_Uart (input bit clk) ;
    
    task wait_it();
       @(cb) wait(cb.inter !== 0);
+
 // Le contrôle de la qualité des signaux est utile pour
 // les tests des modèles rétro annotés 
 // Assertion procédurales
@@ -39,7 +40,7 @@ interface if_to_Uart (input bit clk) ;
       end 
 */
    endtask : wait_it 
-   
+
    property int_ok;
       !arst |-> !$isunknown(inter);     
    endproperty : int_ok

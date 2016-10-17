@@ -4,10 +4,13 @@ work
 .project
 .settings
 *~
+<<<<<<< HEAD
 
 
 # Created by https://www.gitignore.io/api/latex
 
+=======
+>>>>>>> tp1_exo3.6
 ### LaTeX ###
 ## Core latex/pdflatex auxiliary files:
 *.aux
@@ -104,6 +107,10 @@ acs-*.bib
 *.gtex
 
 # hyperref
+<<<<<<< HEAD
+=======
+*.brf
+>>>>>>> tp1_exo3.6
 
 # knitr
 *-concordance.tex
@@ -136,6 +143,10 @@ _minted*
 *.mw
 
 # mylatexformat
+<<<<<<< HEAD
+=======
+*.fmt
+>>>>>>> tp1_exo3.6
 
 # nomencl
 *.nlo
@@ -203,4 +214,8 @@ TSWLatexianTemp*
 *~[0-9]*
 
 # auto folder when using emacs and auctex 
+<<<<<<< HEAD
 /auto/*
+=======
+/auto/*
+>>>>>>> tp1_exo3.6

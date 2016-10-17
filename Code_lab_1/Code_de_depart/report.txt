@@ -1,0 +1,124 @@
+COVERGROUP COVERAGE:
+-----------------------------------------------------------------------------------------------
+Covergroup                                             Metric       Goal    Status               
+                                                                                              
+-----------------------------------------------------------------------------------------------
+ TYPE /uart_test_classes/Uart_config/cg                100.0%        100    Covered              
+    covered/total bins:                                    29         29                      
+    missing/total bins:                                     0         29                      
+    % Hit:                                             100.0%        100                      
+    Coverpoint cg::bd                                  100.0%        100    Covered              
+        covered/total bins:                                 5          5                      
+        missing/total bins:                                 0          5                      
+        % Hit:                                         100.0%        100                      
+        bin auto[br_9600]                                  13          1    Covered              
+        bin auto[br_19200]                                 12          1    Covered              
+        bin auto[br_115200]                                11          1    Covered              
+        bin auto[br_153600]                                12          1    Covered              
+        bin auto[br_921600]                                11          1    Covered              
+    Coverpoint cg::err                                 100.0%        100    Covered              
+        covered/total bins:                                 4          4                      
+        missing/total bins:                                 0          4                      
+        % Hit:                                         100.0%        100                      
+        bin auto[noError]                                  19          1    Covered              
+        bin auto[pError]                                   18          1    Covered              
+        bin auto[fError]                                   11          1    Covered              
+        bin auto[dError]                                   11          1    Covered              
+    Cross cg::#cross__0#                               100.0%        100    Covered              
+        covered/total bins:                                20         20                      
+        missing/total bins:                                 0         20                      
+        % Hit:                                         100.0%        100                      
+        bin <auto[br_9600],auto[noError]>                   5          1    Covered              
+        bin <auto[br_19200],auto[noError]>                  4          1    Covered              
+        bin <auto[br_115200],auto[noError]>                 4          1    Covered              
+        bin <auto[br_153600],auto[noError]>                 3          1    Covered              
+        bin <auto[br_921600],auto[noError]>                 3          1    Covered              
+        bin <auto[br_9600],auto[pError]>                    3          1    Covered              
+        bin <auto[br_19200],auto[pError]>                   2          1    Covered              
+        bin <auto[br_115200],auto[pError]>                  4          1    Covered              
+        bin <auto[br_153600],auto[pError]>                  5          1    Covered              
+        bin <auto[br_921600],auto[pError]>                  4          1    Covered              
+        bin <auto[br_9600],auto[fError]>                    3          1    Covered              
+        bin <auto[br_19200],auto[fError]>                   2          1    Covered              
+        bin <auto[br_115200],auto[fError]>                  1          1    Covered              
+        bin <auto[br_153600],auto[fError]>                  2          1    Covered              
+        bin <auto[br_921600],auto[fError]>                  3          1    Covered              
+        bin <auto[br_9600],auto[dError]>                    2          1    Covered              
+        bin <auto[br_19200],auto[dError]>                   4          1    Covered              
+        bin <auto[br_115200],auto[dError]>                  2          1    Covered              
+        bin <auto[br_153600],auto[dError]>                  2          1    Covered              
+        bin <auto[br_921600],auto[dError]>                  1          1    Covered              
+ CLASS Uart_config
+ Covergroup instance \/uart_test_classes::Uart_config::cg  
+                                                       100.0%        100    Covered              
+    covered/total bins:                                    29         29                      
+    missing/total bins:                                     0         29                      
+    % Hit:                                             100.0%        100                      
+    Coverpoint bd                                      100.0%        100    Covered              
+        covered/total bins:                                 5          5                      
+        missing/total bins:                                 0          5                      
+        % Hit:                                         100.0%        100                      
+        bin auto[br_9600]                                  13          1    Covered              
+        bin auto[br_19200]                                 12          1    Covered              
+        bin auto[br_115200]                                11          1    Covered              
+        bin auto[br_153600]                                12          1    Covered              
+        bin auto[br_921600]                                11          1    Covered              
+    Coverpoint err                                     100.0%        100    Covered              
+        covered/total bins:                                 4          4                      
+        missing/total bins:                                 0          4                      
+        % Hit:                                         100.0%        100                      
+        bin auto[noError]                                  19          1    Covered              
+        bin auto[pError]                                   18          1    Covered              
+        bin auto[fError]                                   11          1    Covered              
+        bin auto[dError]                                   11          1    Covered              
+    Cross #cross__0#                                   100.0%        100    Covered              
+        covered/total bins:                                20         20                      
+        missing/total bins:                                 0         20                      
+        % Hit:                                         100.0%        100                      
+        bin <auto[br_9600],auto[noError]>                   5          1    Covered              
+        bin <auto[br_19200],auto[noError]>                  4          1    Covered              
+        bin <auto[br_115200],auto[noError]>                 4          1    Covered              
+        bin <auto[br_153600],auto[noError]>                 3          1    Covered              
+        bin <auto[br_921600],auto[noError]>                 3          1    Covered              
+        bin <auto[br_9600],auto[pError]>                    3          1    Covered              
+        bin <auto[br_19200],auto[pError]>                   2          1    Covered              
+        bin <auto[br_115200],auto[pError]>                  4          1    Covered              
+        bin <auto[br_153600],auto[pError]>                  5          1    Covered              
+        bin <auto[br_921600],auto[pError]>                  4          1    Covered              
+        bin <auto[br_9600],auto[fError]>                    3          1    Covered              
+        bin <auto[br_19200],auto[fError]>                   2          1    Covered              
+        bin <auto[br_115200],auto[fError]>                  1          1    Covered              
+        bin <auto[br_153600],auto[fError]>                  2          1    Covered              
+        bin <auto[br_921600],auto[fError]>                  3          1    Covered              
+        bin <auto[br_9600],auto[dError]>                    2          1    Covered              
+        bin <auto[br_19200],auto[dError]>                   4          1    Covered              
+        bin <auto[br_115200],auto[dError]>                  2          1    Covered              
+        bin <auto[br_153600],auto[dError]>                  2          1    Covered              
+        bin <auto[br_921600],auto[dError]>                  1          1    Covered              
+ TYPE /uart_test_classes/Uart_receiver/cg               60.0%        100    Uncovered            
+    covered/total bins:                                     6         10                      
+    missing/total bins:                                     4         10                      
+    % Hit:                                              60.0%        100                      
+    Coverpoint cg::status_dut                           80.0%        100    Uncovered            
+        covered/total bins:                                 4          5                      
+        missing/total bins:                                 1          5                      
+        % Hit:                                          80.0%        100                      
+        bin Rx                                            616          1    Covered              
+        bin Tx                                            616          1    Covered              
+        bin O_err                                           0          1    ZERO                 
+        bin P_err                                         256          1    Covered              
+        bin F_err                                          51          1    Covered              
+        default bin vide                                  564               Occurred             
+    Coverpoint cg::status_com                           40.0%        100    Uncovered            
+        covered/total bins:                                 2          5                      
+        missing/total bins:                                 3          5                      
+        % Hit:                                          40.0%        100                      
+        bin Rx                                            564          1    Covered              
+        bin Tx                                            564          1    Covered              
+        bin O_err                                           0          1    ZERO                 
+        bin P_err                                           0          1    ZERO                 
+        bin F_err                                           0          1    ZERO                 
+        default bin vide                                  616               Occurred             
+ CLASS Uart_receiver
+
+TOTAL COVERGROUP COVERAGE: 80.0%  COVERGROUP TYPES: 2

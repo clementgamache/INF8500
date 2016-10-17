@@ -1,4 +1,4 @@
-// module top recepteur uart 
+ // module top recepteur uart 
 // sert d'interface avec le testbench via interface
 
 module top_Uart(if_to_Uart bfm) ;
@@ -12,4 +12,5 @@ module top_Uart(if_to_Uart bfm) ;
                .rx(bfm.rx),
                .tx(bfm.tx),
                .inter(bfm.inter) ) ;
+
 endmodule : top_Uart

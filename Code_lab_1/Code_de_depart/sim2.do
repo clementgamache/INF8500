@@ -23,7 +23,16 @@ add wave {sim:/uart_tb/bfm/tx }
 add wave {sim:/uart_tb/bfm/inter } 
 add wave {sim:/uart_tb/stimuli/bfm/cb/inter } 
 add wave {sim:/uart_tb/bfm/arst } 
+
+add wave {sim:/uart_tb/bfm_com/we } 
+add wave {sim:/uart_tb/bfm_com/ce } 
+add wave {sim:/uart_tb/bfm_com/adr } 
+add wave {sim:/uart_tb/bfm_com/dat } 
+add wave {sim:/uart_tb/bfm_com/rx } 
+add wave {sim:/uart_tb/bfm_com/tx } 
+add wave {sim:/uart_tb/bfm_com/inter } 
+add wave {sim:/uart_tb/stimuli/bfm_com/cb/inter } 
+add wave {sim:/uart_tb/bfm_com/arst } 
 run -all
-#coverage report -detail -cvg -file report.txt
+coverage report -detail -cvg -file report.txt
 #quit -sim
-#run 40 ns
