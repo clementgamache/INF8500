@@ -1,0 +1,19 @@
+--> Initial (reference)
+Real execution time: 0.018198 seconde
+Simulation time: 466 seconde
+
+Test passed !
+@I [SIM-1000] *** C/RTL co-simulation finished: PASS ***
+@I [SIM-335] Co-sim total time used: 490 seconds.
+@I [LIC-101] Checked in feature [HLS]
+
+
+
+--> Opt1 : unroll d'une boucle "for"
+Real execution time: 0.0180324 seconde
+Simulation time: 923 seconde
+
+Test passed !
+@I [SIM-1000] *** C/RTL co-simulation finished: PASS ***
+@I [SIM-335] Co-sim total time used: 959 seconds.
+@I [LIC-101] Checked in feature [HLS]

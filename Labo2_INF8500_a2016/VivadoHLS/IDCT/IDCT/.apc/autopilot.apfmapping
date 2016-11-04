@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
+  <source>
+    <originFiles name="IDCT.cpp" path="C:\TEMP\INF8500\Labo2_INF8500_a2016\VivadoHLS\IDCT\IDCT.cpp"/>
+  </source>
+  <testbench>
+    <originFiles name="DEMUX_IDCT.bin" path="C:\TEMP\INF8500\Labo2_INF8500_a2016\VivadoHLS\IDCT\IDCT\DEMUX_IDCT.bin"/>
+    <originFiles name="IDCT_LIBU.bin" path="C:\TEMP\INF8500\Labo2_INF8500_a2016\VivadoHLS\IDCT\IDCT\IDCT_LIBU.bin"/>
+    <originFiles name="IQZZ_IDCT.bin" path="C:\TEMP\INF8500\Labo2_INF8500_a2016\VivadoHLS\IDCT\IDCT\IQZZ_IDCT.bin"/>
+    <originFiles name="tb_driver.cpp" path="C:\TEMP\INF8500\Labo2_INF8500_a2016\VivadoHLS\IDCT\IDCT\tb_driver.cpp"/>
+    <originFiles name="tb_driver.h" path="C:\TEMP\INF8500\Labo2_INF8500_a2016\VivadoHLS\IDCT\IDCT\tb_driver.h"/>
+    <originFiles name="tb_init.cpp" path="C:\TEMP\INF8500\Labo2_INF8500_a2016\VivadoHLS\IDCT\IDCT\tb_init.cpp"/>
+    <originFiles name="tb_init.h" path="C:\TEMP\INF8500\Labo2_INF8500_a2016\VivadoHLS\IDCT\IDCT\tb_init.h"/>
+    <originFiles name="tb_top.cpp" path="C:\TEMP\INF8500\Labo2_INF8500_a2016\VivadoHLS\IDCT\IDCT\tb_top.cpp"/>
+  </testbench>
+</autopilotfilemapping:AutoPilotFileMapping>

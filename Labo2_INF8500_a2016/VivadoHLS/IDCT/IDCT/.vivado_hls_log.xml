@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vivadoHLSLog:LogRoot xmlns:vivadoHLSLog="www.xilinx.com/vivadoHLSLog">
+  <errorLogs>
+    <logs>
+      <synLog/>
+      <simLog/>
+      <mgLog/>
+      <packageLog/>
+    </logs>
+  </errorLogs>
+  <warningLogs>
+    <logs>
+      <synLog>
+        <logs message="@W [XFORM-503] Cannot unroll loop 'thread_label0' (IDCT.cpp:87) in function 'IDCT::thread': cannot completely unroll a loop with a variable trip count." projectName="IDCT" solutionName="Optimisee1" date="2016-11-03T20:06:31.799-0400" type="Warning"/>
+      </synLog>
+      <simLog>
+        <logs message="@W [SIM-343] Isim|Xsim|NCsim is not supported for SystemC designs. ModelSim will be used for RTL simulation." projectName="IDCT" solutionName="Initiale" date="2016-11-03T20:49:23.272-0400" type="Warning"/>
+        <logs message="@W [SIM-343] Isim|Xsim|NCsim is not supported for SystemC designs. ModelSim will be used for RTL simulation." projectName="IDCT" solutionName="Opt1" date="2016-11-03T20:36:04.090-0400" type="Warning"/>
+      </simLog>
+      <mgLog/>
+      <packageLog/>
+    </logs>
+  </warningLogs>
+</vivadoHLSLog:LogRoot>
