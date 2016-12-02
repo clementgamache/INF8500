@@ -1,0 +1,50 @@
+################################################################################
+#
+# Filename : DEMUX.cpp.mingw.dat
+#
+# Author : SpaceStudio generation engine
+#
+# Warning: This file content will be overwritten by the next generation process.
+#
+################################################################################
+MODULE_READ	12	true	-1	71	int
+REGISTER_WRITE	10	false	-1	76	unsigned+long	1
+MODULE_WRITE	20	true	-1	111	unsigned+int
+MODULE_WRITE	17	true	-1	112	unsigned+int
+MODULE_WRITE	15	true	-1	113	unsigned+int
+MODULE_WRITE	18	true	-1	114	unsigned+int
+MODULE_WRITE	20	true	-1	134	unsigned+int
+MODULE_WRITE	20	true	-1	135	unsigned+int
+MODULE_WRITE	20	true	-1	137	unsigned+int
+MODULE_WRITE	20	true	-1	138	unsigned+int
+MODULE_WRITE	20	true	-1	139	unsigned+int
+MODULE_WRITE	17	true	-1	141	unsigned+int
+MODULE_WRITE	17	true	-1	142	unsigned+int
+MODULE_WRITE	15	true	-1	144	unsigned+int
+MODULE_WRITE	18	true	-1	146	unsigned+int
+MODULE_WRITE	18	true	-1	147	unsigned+int
+MODULE_WRITE	18	true	-1	148	unsigned+int
+MODULE_WRITE	18	true	-1	149	unsigned+int
+MODULE_WRITE	18	true	-1	150	unsigned+int
+MODULE_WRITE	20	true	-1	156	unsigned+int
+MODULE_WRITE	17	true	-1	157	unsigned+int
+MODULE_WRITE	18	true	-1	158	unsigned+int
+MODULE_WRITE	20	true	-1	168	unsigned+int
+MODULE_WRITE	20	true	-1	170	unsigned+int
+MODULE_WRITE	17	true	-1	178	unsigned+int
+MODULE_WRITE	17	true	-1	180	unsigned+int
+MODULE_WRITE	20	true	-1	199	unsigned+int
+MODULE_WRITE	20	true	-1	207	unsigned+int
+MODULE_WRITE	17	true	-1	208	unsigned+int
+MODULE_WRITE	15	true	-1	209	unsigned+int
+MODULE_WRITE	18	true	-1	210	unsigned+int
+MODULE_WRITE	20	true	-1	228	unsigned+int
+MODULE_WRITE	20	true	-1	238	unsigned+int
+MODULE_READ	18	true	-1	280	unsigned+long
+MODULE_WRITE	20	true	-1	284	unsigned+int
+MODULE_WRITE	17	true	-1	285	unsigned+int
+MODULE_WRITE	15	true	-1	286	unsigned+int
+MODULE_WRITE	18	true	-1	346	unsigned+int
+MODULE_WRITE	20	true	-1	350	unsigned+int
+MODULE_WRITE	17	true	-1	351	unsigned+int
+DEVICE_READ	11	false	4	375	unsigned+char

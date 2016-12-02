@@ -1,0 +1,6 @@
+#fichiers à charger en mémoire
+#../../../../../../../import/image/plan.jpg	0
+#../../../../../../../import/image/space.jpg	0
+#../../../../../../../import/video/wrapper_6frames.mov	0
+#../../../../../../../import/video/DSCF2474_2frames.AVI	0
+../../../../../../../import/video/old_montreal.AVI	0

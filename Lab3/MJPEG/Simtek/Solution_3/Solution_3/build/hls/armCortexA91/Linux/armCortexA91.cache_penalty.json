@@ -1,0 +1,19 @@
+{
+  "penalties" : [ {
+    "level" : 1,
+    "type" : "INST_PENALTY",
+    "penalty" : 3
+  }, {
+    "level" : 1,
+    "type" : "DATA_PENALTY",
+    "penalty" : 3
+  }, {
+    "level" : 2,
+    "type" : "BOTH_PENALTY",
+    "penalty" : 20
+  }, {
+    "level" : -1,
+    "type" : "BOTH_PENALTY",
+    "penalty" : 20
+  } ]
+}

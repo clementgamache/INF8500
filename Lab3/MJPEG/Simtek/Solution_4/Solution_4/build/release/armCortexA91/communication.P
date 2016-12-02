@@ -1,0 +1,14 @@
+communication.o: communication.cpp \
+ c:\logiciels\spacestudio-2.8.0-rc5-pl3\toolchains\arm-unknown-linux-gnueabi\arm-unknown-linux-gnueabi\sysroot\usr\include\stdc-predef.h \
+ C:/TEMP/MJPEG/Simtek/Solution_4/Solution_4/build/release/PlatformDefinitions.h \
+ C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/EntryClass.h \
+ C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/TorConfiguration.h \
+ C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/CommunicationAPI.h \
+ C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceTypes.h
+communication.cpp :
+ /c\logiciels\spacestudio-2.8.0-rc5-pl3\toolchains\arm-unknown-linux-gnueabi\arm-unknown-linux-gnueabi\sysroot\usr\include\stdc-predef.h :
+ /C/TEMP/MJPEG/Simtek/Solution_4/Solution_4/build/release/PlatformDefinitions.h :
+ /C/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/EntryClass.h :
+ /C/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/TorConfiguration.h :
+ /C/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/CommunicationAPI.h :
+ /C/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceTypes.h :

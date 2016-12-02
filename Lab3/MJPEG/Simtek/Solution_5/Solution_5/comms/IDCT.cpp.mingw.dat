@@ -1,0 +1,13 @@
+################################################################################
+#
+# Filename : IDCT.cpp.mingw.dat
+#
+# Author : SpaceStudio generation engine
+#
+# Warning: This file content will be overwritten by the next generation process.
+#
+################################################################################
+MODULE_READ	14	true	-1	66	unsigned+int
+MODULE_READ	14	true	-1	74	unsigned+int
+MODULE_READ	17	true	128	84	short
+MODULE_WRITE	18	true	64	114	unsigned+char

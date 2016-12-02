@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<project name="MJPEG" version="280" xmlns="http://www.spacecodesign.com/schemas/2.7/ProjectItems.xsd">
+    <files>
+        <file name="generic_throughput.cpp" type="SOURCE"/>
+        <file name="generic_throughput.h" type="HEADER"/>
+        <file name="genx_throughput.cpp" type="SOURCE"/>
+        <file name="genx_throughput.h" type="HEADER"/>
+        <file name="gt.c" type="SOURCE"/>
+        <file name="gt.h" type="HEADER"/>
+        <file name="jpeg.h" type="HEADER"/>
+        <file name="map_helper.c" type="SOURCE"/>
+        <file name="map_helper.h" type="HEADER"/>
+        <file name="simtek_throughput.cpp" type="SOURCE"/>
+        <file name="simtek_throughput.h" type="HEADER"/>
+        <file name="throughput_if.h" type="HEADER"/>
+    </files>
+    <libraries/>
+    <usermodules>
+        <usermodule name="BRAM_LOADER">
+            <filerefs/>
+            <libraryrefs/>
+        </usermodule>
+        <usermodule name="COLOR_METRICS">
+            <filerefs/>
+            <libraryrefs/>
+        </usermodule>
+        <usermodule name="DEMUX">
+            <filerefs>
+                <fileref name="jpeg.h"/>
+            </filerefs>
+            <libraryrefs/>
+        </usermodule>
+        <usermodule name="IDCT">
+            <filerefs>
+                <fileref name="jpeg.h"/>
+            </filerefs>
+            <libraryrefs/>
+        </usermodule>
+        <usermodule name="IMAGE_SAVER">
+            <filerefs/>
+            <libraryrefs/>
+        </usermodule>
+        <usermodule name="IQZZ">
+            <filerefs/>
+            <libraryrefs/>
+        </usermodule>
+        <usermodule name="LIBU">
+            <filerefs/>
+            <libraryrefs/>
+        </usermodule>
+        <usermodule name="PERF_MONITOR">
+            <filerefs>
+                <fileref name="generic_throughput.cpp"/>
+                <fileref name="generic_throughput.h"/>
+                <fileref name="genx_throughput.cpp"/>
+                <fileref name="genx_throughput.h"/>
+                <fileref name="gt.c"/>
+                <fileref name="gt.h"/>
+                <fileref name="map_helper.c"/>
+                <fileref name="map_helper.h"/>
+                <fileref name="simtek_throughput.cpp"/>
+                <fileref name="simtek_throughput.h"/>
+                <fileref name="throughput_if.h"/>
+            </filerefs>
+            <libraryrefs/>
+        </usermodule>
+        <usermodule name="VLD">
+            <filerefs/>
+            <libraryrefs/>
+        </usermodule>
+    </usermodules>
+    <userdevices>
+        <userdevice name="simulation_timer" type="SLAVE">
+            <filerefs/>
+            <libraryrefs/>
+        </userdevice>
+    </userdevices>
+</project>

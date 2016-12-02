@@ -1,0 +1,210 @@
+{
+  "coreConfigFiles" : {
+    "armCortexA91.core0" : {
+      "dataFile" : "armCortexA91.core0.json",
+      "schemaFile" : "armCortexA91.core0.avsc"
+    }
+  },
+  "ModuleSlaveAdapterConfigFiles" : {
+    "adap_DEMUX1_AMBA_AXIBus_LT1_wrIF" : {
+      "dataFile" : "adap_DEMUX1_AMBA_AXIBus_LT1_wrIF.json",
+      "schemaFile" : "adap_DEMUX1_AMBA_AXIBus_LT1_wrIF.avsc"
+    },
+    "adap_DEMUX1_AMBA_AXIBus_LT1_rdIF" : {
+      "dataFile" : "adap_DEMUX1_AMBA_AXIBus_LT1_rdIF.json",
+      "schemaFile" : "adap_DEMUX1_AMBA_AXIBus_LT1_rdIF.avsc"
+    },
+    "adap_IDCT1_AMBA_AXIBus_LT1_wrIF" : {
+      "dataFile" : "adap_IDCT1_AMBA_AXIBus_LT1_wrIF.json",
+      "schemaFile" : "adap_IDCT1_AMBA_AXIBus_LT1_wrIF.avsc"
+    },
+    "adap_IDCT1_AMBA_AXIBus_LT1_rdIF" : {
+      "dataFile" : "adap_IDCT1_AMBA_AXIBus_LT1_rdIF.json",
+      "schemaFile" : "adap_IDCT1_AMBA_AXIBus_LT1_rdIF.avsc"
+    }
+  },
+  "ModuleSlaveAdapterFIFOConfigFiles" : {
+    "fifo_adap_DEMUX1_AMBA_AXIBus_LT1_wrIF0" : {
+      "dataFile" : "fifo_adap_DEMUX1_AMBA_AXIBus_LT1_wrIF0.json",
+      "schemaFile" : "fifo_adap_DEMUX1_AMBA_AXIBus_LT1_wrIF0.avsc"
+    },
+    "fifo_adap_DEMUX1_AMBA_AXIBus_LT1_wrIF1" : {
+      "dataFile" : "fifo_adap_DEMUX1_AMBA_AXIBus_LT1_wrIF1.json",
+      "schemaFile" : "fifo_adap_DEMUX1_AMBA_AXIBus_LT1_wrIF1.avsc"
+    },
+    "fifo_adap_DEMUX1_AMBA_AXIBus_LT1_rdIF1" : {
+      "dataFile" : "fifo_adap_DEMUX1_AMBA_AXIBus_LT1_rdIF1.json",
+      "schemaFile" : "fifo_adap_DEMUX1_AMBA_AXIBus_LT1_rdIF1.avsc"
+    },
+    "fifo_adap_DEMUX1_AMBA_AXIBus_LT1_rdIF2" : {
+      "dataFile" : "fifo_adap_DEMUX1_AMBA_AXIBus_LT1_rdIF2.json",
+      "schemaFile" : "fifo_adap_DEMUX1_AMBA_AXIBus_LT1_rdIF2.avsc"
+    },
+    "fifo_adap_DEMUX1_AMBA_AXIBus_LT1_rdIF3" : {
+      "dataFile" : "fifo_adap_DEMUX1_AMBA_AXIBus_LT1_rdIF3.json",
+      "schemaFile" : "fifo_adap_DEMUX1_AMBA_AXIBus_LT1_rdIF3.avsc"
+    },
+    "fifo_adap_IDCT1_AMBA_AXIBus_LT1_wrIF1" : {
+      "dataFile" : "fifo_adap_IDCT1_AMBA_AXIBus_LT1_wrIF1.json",
+      "schemaFile" : "fifo_adap_IDCT1_AMBA_AXIBus_LT1_wrIF1.avsc"
+    },
+    "fifo_adap_IDCT1_AMBA_AXIBus_LT1_rdIF0" : {
+      "dataFile" : "fifo_adap_IDCT1_AMBA_AXIBus_LT1_rdIF0.json",
+      "schemaFile" : "fifo_adap_IDCT1_AMBA_AXIBus_LT1_rdIF0.avsc"
+    }
+  },
+  "ISSAdapterConfigFiles" : {
+    "ISSAdapter1" : {
+      "dataFile" : "ISSAdapter1.json",
+      "schemaFile" : "ISSAdapter1.avsc"
+    }
+  },
+  "SDLRegisterConfigFiles" : {
+    "DL_DEMUX1_TO_IDCT1_SDLRegister1" : {
+      "dataFile" : "DL_DEMUX1_TO_IDCT1_SDLRegister1.json",
+      "schemaFile" : "DL_DEMUX1_TO_IDCT1_SDLRegister1.avsc"
+    }
+  },
+  "ISSAdapterFIFOConfigFiles" : {
+    "ISSAdapter1_FIFO_0" : {
+      "dataFile" : "ISSAdapter1_FIFO_0.json",
+      "schemaFile" : "ISSAdapter1_FIFO_0.avsc"
+    },
+    "ISSAdapter1_FIFO_1" : {
+      "dataFile" : "ISSAdapter1_FIFO_1.json",
+      "schemaFile" : "ISSAdapter1_FIFO_1.avsc"
+    },
+    "ISSAdapter1_FIFO_2" : {
+      "dataFile" : "ISSAdapter1_FIFO_2.json",
+      "schemaFile" : "ISSAdapter1_FIFO_2.avsc"
+    }
+  },
+  "ModuleRoutingConfigFiles" : {
+    "DEMUX1" : {
+      "dataFile" : "DEMUX1.json",
+      "schemaFile" : "DEMUX1.avsc"
+    },
+    "IDCT1" : {
+      "dataFile" : "IDCT1.json",
+      "schemaFile" : "IDCT1.avsc"
+    }
+  },
+  "AddressRangeConfigFiles" : {
+    "ISSAdapter1_range" : {
+      "dataFile" : "ISSAdapter1_range.json",
+      "schemaFile" : "ISSAdapter1_range.avsc"
+    },
+    "armCortexA91_DDR_InterfaceRange1_range" : {
+      "dataFile" : "armCortexA91_DDR_InterfaceRange1_range.json",
+      "schemaFile" : "armCortexA91_DDR_InterfaceRange1_range.avsc"
+    },
+    "AMBA_AXIBus_LT1_range" : {
+      "dataFile" : "AMBA_AXIBus_LT1_range.json",
+      "schemaFile" : "AMBA_AXIBus_LT1_range.avsc"
+    },
+    "RegisterFile1_range" : {
+      "dataFile" : "RegisterFile1_range.json",
+      "schemaFile" : "RegisterFile1_range.avsc"
+    },
+    "XilinxBRAM1_range" : {
+      "dataFile" : "XilinxBRAM1_range.json",
+      "schemaFile" : "XilinxBRAM1_range.avsc"
+    },
+    "XilinxPIC1_range" : {
+      "dataFile" : "XilinxPIC1_range.json",
+      "schemaFile" : "XilinxPIC1_range.avsc"
+    },
+    "simulation_timer1_range" : {
+      "dataFile" : "simulation_timer1_range.json",
+      "schemaFile" : "simulation_timer1_range.avsc"
+    },
+    "adap_DEMUX1_AMBA_AXIBus_LT1_wrIF_range" : {
+      "dataFile" : "adap_DEMUX1_AMBA_AXIBus_LT1_wrIF_range.json",
+      "schemaFile" : "adap_DEMUX1_AMBA_AXIBus_LT1_wrIF_range.avsc"
+    },
+    "adap_DEMUX1_AMBA_AXIBus_LT1_rdIF_range" : {
+      "dataFile" : "adap_DEMUX1_AMBA_AXIBus_LT1_rdIF_range.json",
+      "schemaFile" : "adap_DEMUX1_AMBA_AXIBus_LT1_rdIF_range.avsc"
+    },
+    "adap_IDCT1_AMBA_AXIBus_LT1_wrIF_range" : {
+      "dataFile" : "adap_IDCT1_AMBA_AXIBus_LT1_wrIF_range.json",
+      "schemaFile" : "adap_IDCT1_AMBA_AXIBus_LT1_wrIF_range.avsc"
+    },
+    "adap_IDCT1_AMBA_AXIBus_LT1_rdIF_range" : {
+      "dataFile" : "adap_IDCT1_AMBA_AXIBus_LT1_rdIF_range.json",
+      "schemaFile" : "adap_IDCT1_AMBA_AXIBus_LT1_rdIF_range.avsc"
+    },
+    "DebugModule1_range" : {
+      "dataFile" : "DebugModule1_range.json",
+      "schemaFile" : "DebugModule1_range.avsc"
+    },
+    "S_TFSlaveAdapter1_range" : {
+      "dataFile" : "S_TFSlaveAdapter1_range.json",
+      "schemaFile" : "S_TFSlaveAdapter1_range.avsc"
+    },
+    "S_TFSlaveAdapter2_range" : {
+      "dataFile" : "S_TFSlaveAdapter2_range.json",
+      "schemaFile" : "S_TFSlaveAdapter2_range.avsc"
+    },
+    "S_TFSlaveAdapter3_range" : {
+      "dataFile" : "S_TFSlaveAdapter3_range.json",
+      "schemaFile" : "S_TFSlaveAdapter3_range.avsc"
+    },
+    "S_TFSlaveAdapter4_range" : {
+      "dataFile" : "S_TFSlaveAdapter4_range.json",
+      "schemaFile" : "S_TFSlaveAdapter4_range.avsc"
+    },
+    "S_TFSlaveAdapter5_range" : {
+      "dataFile" : "S_TFSlaveAdapter5_range.json",
+      "schemaFile" : "S_TFSlaveAdapter5_range.avsc"
+    },
+    "S_TFSlaveAdapter6_range" : {
+      "dataFile" : "S_TFSlaveAdapter6_range.json",
+      "schemaFile" : "S_TFSlaveAdapter6_range.avsc"
+    },
+    "S_TFSlaveAdapter7_range" : {
+      "dataFile" : "S_TFSlaveAdapter7_range.json",
+      "schemaFile" : "S_TFSlaveAdapter7_range.avsc"
+    },
+    "S_TFSlaveAdapter8_range" : {
+      "dataFile" : "S_TFSlaveAdapter8_range.json",
+      "schemaFile" : "S_TFSlaveAdapter8_range.avsc"
+    },
+    "S_TFSlaveAdapter9_range" : {
+      "dataFile" : "S_TFSlaveAdapter9_range.json",
+      "schemaFile" : "S_TFSlaveAdapter9_range.avsc"
+    },
+    "S_TFSlaveAdapter10_range" : {
+      "dataFile" : "S_TFSlaveAdapter10_range.json",
+      "schemaFile" : "S_TFSlaveAdapter10_range.avsc"
+    }
+  },
+  "ProcessorMemoriesFiles" : { },
+  "ProcessorDebuggingFiles" : {
+    "armCortexA91.debug" : {
+      "dataFile" : "armCortexA91.debug.json",
+      "schemaFile" : "armCortexA91.debug.avsc"
+    }
+  },
+  "WindowBridgeConfigFiles" : { },
+  "CPUCacheConfigFiles" : {
+    "armCortexA91.cpucache" : {
+      "dataFile" : "armCortexA91.cpucache.json",
+      "schemaFile" : "armCortexA91.cpucache.avsc"
+    }
+  },
+  "LinuxMonitoringFiles" : { },
+  "CachePenaltyFiles" : { },
+  "ResetManagerFiles" : {
+    "reset_manager" : {
+      "dataFile" : "reset_manager.json",
+      "schemaFile" : "reset_manager.avsc"
+    }
+  },
+  "MonitoringEngineFiles" : {
+    "MonitoringEngine" : {
+      "dataFile" : "MonitoringEngine.json",
+      "schemaFile" : "MonitoringEngine.avsc"
+    }
+  }
+}

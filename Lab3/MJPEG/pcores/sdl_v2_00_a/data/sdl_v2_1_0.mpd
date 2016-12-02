@@ -1,0 +1,41 @@
+###################################################################
+##
+## Filename       : sdl_v2_1_0.mpd
+## Description    : Microprocessor Peripheral Definition
+##
+###################################################################
+##  Copyright 2011 - Space Codesign Systems, Inc.
+##  All rights reserved.
+###################################################################
+
+BEGIN sdl
+
+## Peripheral Options
+OPTION IPTYPE = PERIPHERAL
+OPTION IMP_NETLIST = TRUE
+OPTION HDL = VHDL
+OPTION ARCH_SUPPORT_MAP = (OTHERS=DEVELOPMENT)
+OPTION IP_GROUP = USER
+OPTION STYLE = MIX
+
+
+## Bus Interfaces
+
+## Generics for VHDL or Parameters for Verilog
+PARAMETER DEPTH = 128, DT = INTEGER
+PARAMETER AWIDTH = 32, DT = INTEGER
+PARAMETER DWIDTH = 32, DT = INTEGER
+PARAMETER GEN_ID = 0, DT = INTEGER
+
+## Ports
+PORT Reset = "", DIR = I
+PORT SDL_M_Clk = "", DIR = I
+PORT SDL_M_Data = "", DIR = I, VEC = [0:(DWIDTH-1)]
+PORT SDL_M_Write = "", DIR = I
+PORT SDL_M_Full = "", DIR = O
+PORT SDL_S_Clk = "", DIR = I
+PORT SDL_S_Data = "", DIR = O, VEC = [0:(DWIDTH-1)]
+PORT SDL_S_Read = "", DIR = I
+PORT SDL_S_Empty = "", DIR = O
+
+END

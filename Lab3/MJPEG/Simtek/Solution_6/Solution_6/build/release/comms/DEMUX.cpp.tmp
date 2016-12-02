@@ -1,0 +1,950 @@
+# 1 "C:/TEMP/MJPEG/src/module/DEMUX.cpp"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdc-predef.h" 1 3 4
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+
+
+
+
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+# 52 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdc-predef.h" 3 4
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+
+
+/* We do not support C11 <threads.h>.  */
+# 1 "<command-line>" 2
+# 1 "C:/TEMP/MJPEG/src/module/DEMUX.cpp"
+// ***********************************************************************
+//
+// Filename : DEMUX.cpp
+//
+// Author : SpaceStudio generation engine
+//
+// Creation date : Wed Jun 08 15:01:58 EDT 2011
+//
+//
+// ***********************************************************************
+
+#include "DEMUX.h"
+# 12 "C:/TEMP/MJPEG/src/module/DEMUX.cpp"
+# 1 "C:/TEMP/MJPEG/src/module/DEMUX.h" 1
+// ***********************************************************************
+//
+// Filename : DEMUX.h
+//
+// Author : SpaceStudio generation engine
+//
+// Creation date : Wed Jun 08 15:01:58 EDT 2011
+//
+//
+// ***********************************************************************
+
+
+
+
+#include <systemc.h>
+# 15 "C:/TEMP/MJPEG/src/module/DEMUX.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/systemc.h" 1
+
+
+
+#include "systemc"
+# 4 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/systemc.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/systemc" 1
+
+
+
+// Nothing from SystemC proper
+namespace sc_core {
+}
+# 5 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/systemc.h" 2
+
+// Using declarations in the C++ standard library, as specified in IEEE 1666-2011, section 5.1.2
+namespace std {}
+using std::ios;
+using std::streambuf;
+using std::streampos;
+using std::streamsize;
+using std::iostream;
+using std::istream;
+using std::ostream;
+using std::cin;
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::flush;
+using std::dec;
+using std::hex;
+using std::oct;
+using std::fstream;
+using std::ifstream;
+using std::ofstream;
+using std::size_t;
+using std::memchr;
+using std::memcmp;
+using std::memcpy;
+using std::memmove;
+using std::memset;
+using std::strcat;
+using std::strncat;
+using std::strchr;
+using std::strrchr;
+using std::strcmp;
+using std::strncmp;
+using std::strcpy;
+using std::strncpy;
+using std::strcspn;
+using std::strspn;
+using std::strlen;
+using std::strpbrk;
+using std::strstr;
+using std::strtok;
+# 16 "C:/TEMP/MJPEG/src/module/DEMUX.h" 2
+#include "SpaceBaseModule.h"
+# 16 "C:/TEMP/MJPEG/src/module/DEMUX.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/SpaceBaseModule.h" 1
+
+
+
+#include "SpaceTypes.h"
+# 4 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/SpaceBaseModule.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceTypes.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+///\class     SPACE_STATUS
+///
+///\brief     Status returned by the Space Codesign engined for end users
+///
+///////////////////////////////////////////////////////////////////////////////
+static const unsigned char SPACE_OK = 0; ///< Tells the operation was completed successfully
+static const unsigned char SPACE_ERROR = 1; ///< Tells the operation did not complete and simulation 
+static const unsigned char SPACE_EMPTY = 2; ///< may be corrupted or may fail
+static const unsigned char SPACE_FULL = 3; ///> Tells the operation cannot be completed because no storage is available
+static const unsigned char SPACE_NOT_CONNECTED = 99; ///< REports an access to an unconnected port
+
+typedef unsigned char eSpaceStatus;
+
+
+///////////////////////////////////////////////////////////////////////////////
+///\enum     SpaceChannelStatusStr
+///
+///\brief    Statuses returned when using Space Interface Methods
+///////////////////////////////////////////////////////////////////////////////
+typedef enum
+{
+/**** for platform ****/
+ SPACE_CHANNEL_OK = 0, // Was successfully completed from end to end
+ SPACE_CHANNEL_FULL = 1, // Channel is FULL and write operation was cancelled
+ SPACE_CHANNEL_EMPTY = 2, // Nothing to read and data pointer is invalid
+ SPACE_CHANNEL_UNUSED_STATUS_1 = 3, // Currently unused status code
+
+ SPACE_CHANNEL_UNUSED_STATUS_2 = 4, // Currently unused status code
+    SPACE_CHANNEL_ADDR_OUT_OF_RANGE = 5, // Destination Address was out of range
+
+ SPACE_CHANNEL_ERROR = 6, // An unrecoverable error from which the system cannot recover occured
+          // Users receiving this error are recommended to stop the simulation
+ SPACE_CHANNEL_TERMINATOR_ACCESS = 7, // An unbound port was accessed. 
+          // Users receiving this error are recommended to stop the simulation
+
+    SPACE_CHANNEL_MSG_SIZE_ERROR = 8, // Platform: Unsupported Size of Request
+    SPACE_CHANNEL_NO_QUEUE_AVAILABLE = 9, // SW:No queue available in FreeQueuePool (in the case of writing)
+ SPACE_CHANNEL_UNUSED_STATUS_4 = 10, // Currently unused status code
+
+ /**** for RTL ****/
+ SPACE_CHANNEL_IN_PROGRESS = 11, // Request currently being processed
+
+
+/**** NEW ****/
+
+ SPACE_UNKNOWN_DESTINATION = 12,
+ SPACE_INVALID_OFFSET = 13
+
+
+} eSpaceChannelStatus;
+
+
+///////////////////////////////////////////////////////////////////////////////
+///\enum     eSpaceTransactionType
+///
+///\brief    SPACE Transaction options. 
+///\note     Updated with unsigned long type. 
+///////////////////////////////////////////////////////////////////////////////
+static const unsigned long SPACE_NON_BLOCKING = 0; ///< Indicates the transaction is non blocking
+static const unsigned long SPACE_NO_WAIT = 0;
+static const unsigned long SPACE_BLOCKING = 0xFFFFFFFF; ///< Indicates the transaction is blocking
+static const unsigned long SPACE_WAIT_FOREVER = 0xFFFFFFFF;
+
+typedef unsigned long eSpaceTransactionType;
+
+
+///////////////////////////////////////////////////////////////////////////////
+///\class     enum eSpaceComponentType
+///
+///\brief     Descriptor found in eSpaceComponentType representing either
+///           a module or a device 
+///////////////////////////////////////////////////////////////////////////////
+typedef enum
+{
+    SPACE_UNREGISTERED = 0,
+    SPACE_MODULE = 1,
+    SPACE_DEVICE = 2,
+    //SPACE_MODULE_ADAPTER = 3,
+ SPACE_ISS_ADAPTER = 4,
+ SPACE_REGISTER_FILE = 5,
+ SPACE_SLAVE_BRIDGE = 6
+} eSpaceComponentType;
+
+
+///////////////////////////////////////////////////////////////////////////////
+///\enum      eSpaceCommunicationType
+///
+///\brief      SPACE communication types
+///////////////////////////////////////////////////////////////////////////////
+typedef enum
+{
+ SPACE_MODULE_READ = 0,
+ SPACE_MODULE_WRITE = 1,
+ SPACE_DEVICE_READ = 2,
+ SPACE_DEVICE_WRITE = 3,
+ SPACE_REGISTER_READ = 4,
+ SPACE_REGISTER_WRITE = 5,
+ SPACE_UNKNOWN_COMMUNICATION = 0xFF
+} eSpaceCommunicationType;
+
+
+
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 5 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/SpaceBaseModule.h" 2
+
+#include "systemc"
+
+class SpaceBaseModule;
+# 17 "C:/TEMP/MJPEG/src/module/DEMUX.h" 2
+#include "jpeg.h"
+# 17 "C:/TEMP/MJPEG/src/module/DEMUX.h"
+# 1 "C:/TEMP/MJPEG/import/src/jpeg.h" 1
+///////////////////////////////////////////////////////////////////////////////
+//
+//	jpeg.h
+//
+///////////////////////////////////////////////////////////////////////////////
+# 14 "C:/TEMP/MJPEG/import/src/jpeg.h"
+// Marker
+# 26 "C:/TEMP/MJPEG/import/src/jpeg.h"
+// DEMUX COMMAND
+
+
+
+
+
+/* is x a restart interval ? */
+
+
+// Macros
+# 18 "C:/TEMP/MJPEG/src/module/DEMUX.h" 2
+
+// Typedef
+typedef enum JPEGReaderState
+{
+ LookingForMarker,
+ MarkerFound
+} JPEGReaderState;
+
+class DEMUX : public SpaceBaseModule
+{
+ public:
+
+     SC_HAS_PROCESS(DEMUX);
+
+  // Default constructor
+  DEMUX( sc_module_name zName,
+        double dClockPeriod,
+        sc_time_unit Unit,
+        unsigned char ucID,
+        unsigned char ucPriority,
+        bool bVerbose);
+
+  // Thread
+     void thread(void);
+
+ private:
+
+  ///
+  /// Members
+  ///
+  unsigned int m_nbFrames;
+  unsigned int m_uiOffset;
+  unsigned char m_Buffer[4];
+  bool m_BufferValid;
+
+  ///
+  /// Methods
+  ///
+  unsigned short get_next_mk();
+  void skip_segment();
+  void find_info(void);
+  unsigned char read_8_bits();
+  unsigned short read_16_bits();
+  void skip_bytes(unsigned short NbBytes);
+
+};
+# 13 "C:/TEMP/MJPEG/src/module/DEMUX.cpp" 2
+#include <stdio.h>
+# 13 "C:/TEMP/MJPEG/src/module/DEMUX.cpp"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/stdio.h" 1
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+#include <stddef.h>
+# 13 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/stdio.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/stddef.h" 1
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+typedef int size_t;
+
+
+
+typedef int ptrdiff_t;
+
+
+
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 14 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/stdio.h" 2
+struct FILE {
+};
+typedef int fpos_t;
+
+
+
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 14 "C:/TEMP/MJPEG/src/module/DEMUX.cpp" 2
+
+// Automatically-generated includes
+#include "PlatformDefinitions.h"
+# 16 "C:/TEMP/MJPEG/src/module/DEMUX.cpp"
+# 1 "temp/PlatformDefinitions.h" 1
+// ***********************************************************************
+//
+// Filename: 		PlatformDefinitions.h
+//
+// Level:			Simtek
+//
+// Author: 			SpaceStudio generation engine
+//
+// Warning: 
+// ========
+//			1) This file content will be overwritten by the next generation process.
+//			2) All the ID must be unique to the current project.
+//
+// ***********************************************************************
+
+
+
+
+//Level of technology of this platform
+
+
+// User's Module ID
+# 32 "temp/PlatformDefinitions.h"
+// User's Device(and Wrapper) ID
+
+
+// User's Module priority
+# 45 "temp/PlatformDefinitions.h"
+// User's Device(and Wrapper) priority
+
+// SpaceComponents IDs
+# 61 "temp/PlatformDefinitions.h"
+// SpaceComponents PRIOs
+
+
+
+
+// Memories' size
+# 17 "C:/TEMP/MJPEG/src/module/DEMUX.cpp" 2
+
+// User-generated includes
+#include "ApplicationDefinitions.h"
+# 19 "C:/TEMP/MJPEG/src/module/DEMUX.cpp"
+# 1 "C:/TEMP/MJPEG/src/application/ApplicationDefinitions.h" 1
+// ***********************************************************************
+//
+// Filename: 		ApplicationDefinitions.h
+//
+// Author: 			SpaceStudio generation engine
+//
+// Creation date: 	Fri Oct 07 11:16:52 EDT 2016
+//
+// Warning: 		This file will not be overwritten by the SpaceStudio 
+//					generation engine.
+//
+// Note:			This file is automatically added in a new project or in an 
+//					existing project only if this file is not already present.
+//					Otherwise, this file remains untouched by the SpaceStudio 
+//					generation engine.  So this is a good place to declare 
+//					variables that are specific to your application and that 
+//					you need to share between your configurations.
+//
+// ***********************************************************************
+
+
+
+
+
+
+
+#include <stdint.h>
+# 27 "C:/TEMP/MJPEG/src/application/ApplicationDefinitions.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/stdint.h" 1
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+typedef char int8_t;
+typedef unsigned char uint8_t;
+typedef short int16_t;
+typedef unsigned short uint16_t;
+typedef int int32_t;
+typedef unsigned int uint32_t;
+typedef long long int64_t;
+typedef unsigned long long uint64_t;
+typedef char int_least8_t;
+typedef unsigned char uint_least8_t;
+typedef short int_least16_t;
+typedef unsigned short uint_least16_t;
+typedef int int_least32_t;
+typedef unsigned int uint_least32_t;
+typedef long long int_least64_t;
+typedef unsigned long long uint_least64_t;
+typedef char int_fast8_t;
+typedef unsigned char uint_fast8_t;
+typedef short int_fast16_t;
+typedef unsigned short uint_fast16_t;
+typedef int int_fast32_t;
+typedef unsigned int uint_fast32_t;
+typedef long long int_fast64_t;
+typedef unsigned long long uint_fast64_t;
+typedef int* intptr_t;
+typedef unsigned int* uintptr_t;
+typedef long long intmax_t;
+typedef unsigned long long uintmax_t;
+
+
+
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 28 "C:/TEMP/MJPEG/src/application/ApplicationDefinitions.h" 2
+# 38 "C:/TEMP/MJPEG/src/application/ApplicationDefinitions.h"
+//#define IMAGE_SAVER_EN 1
+
+
+
+struct vld_metrics {
+ unsigned int block_count;
+ uint64_t time_start;
+};
+# 20 "C:/TEMP/MJPEG/src/module/DEMUX.cpp" 2
+
+// Space library includes
+#include "SpaceDisplay.h"
+# 22 "C:/TEMP/MJPEG/src/module/DEMUX.cpp"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/SpaceDisplay.h" 1
+
+
+
+// Nothing
+# 23 "C:/TEMP/MJPEG/src/module/DEMUX.cpp" 2
+#include "SpaceTypes.h"
+# 23 "C:/TEMP/MJPEG/src/module/DEMUX.cpp"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceTypes.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+# 119 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceTypes.h"
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 24 "C:/TEMP/MJPEG/src/module/DEMUX.cpp" 2
+
+///////////////////////////////////////////////////////////////////////////////
+///
+/// Constructor
+///
+///////////////////////////////////////////////////////////////////////////////
+DEMUX::DEMUX(sc_module_name zName, double dClockPeriod, sc_time_unit ClockPeriodUnit,
+          unsigned char ucID, unsigned char ucPriority, bool bVerbose )
+: SpaceBaseModule( zName, dClockPeriod, ClockPeriodUnit, ucID, ucPriority, bVerbose )
+{
+ // Initialisation
+ m_BufferValid = false;
+ m_uiOffset = 0;
+
+
+ //This thread is sensitive to the positive edge of the clock signal
+ SC_THREAD(thread);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+///
+/// Thread
+///
+///////////////////////////////////////////////////////////////////////////////
+void DEMUX::thread(void)
+{
+
+ unsigned int currentFrame = 0;
+ unsigned int dataMagic = 0xda1a0000;
+ unsigned short temp_mk = 0;
+ unsigned int header_size = 0, height = 0, width = 0, nb_comp = 0;
+ unsigned int HiVi;
+
+ unsigned char pot_mark = 0;
+ unsigned short mark = 0;
+ unsigned int found_mk = 0, done = 0, end_nb = 0;
+
+ unsigned short image_max_height = 0;
+ unsigned short image_max_width = 0;
+ unsigned int NBLOCKS = 0, BLOCKS_H = 0, BLOCKS_W = 0, marker = 0;
+ unsigned int uiDummy;
+ bool hasHuffTable = false;
+ bool shouldSkip = true;
+
+ //Waiting for BRAM_loader to load the file into memory
+ int ready;
+ ModuleRead(12, SPACE_BLOCKING, &ready);
+
+ SpacePrint("\nDEMUX\n");
+
+ unsigned long end = 0;
+ RegisterWrite(10, 1, &end);
+ while(!end)
+ {
+  find_info();
+
+  // Boucle toutes les images
+  while(currentFrame < m_nbFrames)
+  {
+   hasHuffTable = false;
+   shouldSkip = true;
+
+   // go to the next "start of image" marker
+   while(temp_mk != 0xFFD8 /* start of image	*/)
+   {
+    temp_mk = get_next_mk();
+   }
+
+   // Initialisation
+   found_mk = 0;
+   done = 0;
+
+   while (!done)
+   {
+    // On boucle tant qu'on n'a pas trouvé un marqueur
+    if (!found_mk)
+     mark = get_next_mk();
+
+    // process the new marker
+    switch (mark)
+    {
+     // "start of frame" marker
+     case 0xFFC0 /* start of frame	*/:
+
+      // Tells other modules they should be expecting a header
+      uiDummy = 1;
+      ModuleWrite(20, SPACE_BLOCKING, &uiDummy);
+      ModuleWrite(17, SPACE_BLOCKING, &uiDummy);
+      ModuleWrite(15, SPACE_BLOCKING, &uiDummy);
+      ModuleWrite(18, SPACE_BLOCKING, &uiDummy);
+
+      currentFrame++;
+
+      header_size = read_16_bits(); // header size
+      read_8_bits(); // precision, but we ignore it
+      height = read_16_bits(); // image height
+      width = read_16_bits(); // image width
+      nb_comp = read_8_bits(); // nb of components
+//						SpacePrint("nb_comp = %d\n", nb_comp);
+//						nb_comp = 2;
+
+      // Set global image attributes and diffuse to others core modules
+      image_max_width = ((width+(8)-1)/(8)*(8));
+      image_max_height = ((height+(8)-1)/(8)*(8));
+      BLOCKS_W = (image_max_width/8);
+      BLOCKS_H = (image_max_height/8);
+      NBLOCKS = (BLOCKS_H*BLOCKS_W);
+
+      // send some more info for synchronisation
+      ModuleWrite(20, SPACE_BLOCKING, &dataMagic);
+      ModuleWrite(20, SPACE_BLOCKING, &currentFrame);
+
+      ModuleWrite(20, SPACE_BLOCKING, &width);
+      ModuleWrite(20, SPACE_BLOCKING, &height);
+      ModuleWrite(20, SPACE_BLOCKING, &nb_comp);
+
+      ModuleWrite(17, SPACE_BLOCKING, &NBLOCKS);
+      ModuleWrite(17, SPACE_BLOCKING, &nb_comp);
+
+      ModuleWrite(15, SPACE_BLOCKING, &NBLOCKS);
+
+      ModuleWrite(18, SPACE_BLOCKING, &width);
+      ModuleWrite(18, SPACE_BLOCKING, &height);
+      ModuleWrite(18, SPACE_BLOCKING, &BLOCKS_W);
+      ModuleWrite(18, SPACE_BLOCKING, &BLOCKS_H);
+      ModuleWrite(18, SPACE_BLOCKING, &nb_comp);
+
+      for (unsigned int i = 0; i < nb_comp; ++i)
+      {
+       read_8_bits(); // ignoring component ID (it's always sorted anyway: 1, 2, 3)
+       HiVi = read_16_bits(); // HiVi (1 byte) + Selector (1 byte)
+       ModuleWrite(20, SPACE_BLOCKING, &HiVi);
+       ModuleWrite(17, SPACE_BLOCKING, &HiVi);
+       ModuleWrite(18, SPACE_BLOCKING, &HiVi);
+      }
+
+     break;
+
+     // Huffman table marker
+     case 0xFFC4 /* Huffman table	*/:
+
+      hasHuffTable = true;
+      uiDummy = 3;
+      ModuleWrite(20, SPACE_BLOCKING, &uiDummy);
+
+      ModuleWrite(20, SPACE_BLOCKING, &m_uiOffset); // Huffman table is found, sending address to VLD module
+      skip_segment(); // skip the rest of the DHT segment (VLD will load the table)
+      break;
+
+     // quantization table marker
+     case 0xFFDB /* Quant. table		*/:
+
+      uiDummy = 3;
+      ModuleWrite(17, SPACE_BLOCKING, &uiDummy);
+
+      ModuleWrite(17, SPACE_BLOCKING, &m_uiOffset); // quantization table is found, sending address to IQZZ module
+      skip_segment(); // skip the rest of the DQT segment (IQZZ will load the table)
+      break;
+
+     // RESTART INTERVAL MARKER
+     case 0xFFDD /* restart interval	*/:
+      /* skip sizes */
+      read_8_bits();
+      read_8_bits();
+      read_8_bits();
+      read_8_bits();
+      break;
+
+     // START OF SCAN
+     case 0xFFDA /* start of scan	*/:
+
+      if (!hasHuffTable)
+      {
+       uiDummy = !3;
+       ModuleWrite(20, SPACE_BLOCKING, &uiDummy);
+      }
+
+      if (shouldSkip)
+       break;
+
+      // Tell other module they should be expecting data
+      uiDummy = 2;
+      ModuleWrite(20, SPACE_BLOCKING, &uiDummy);
+      ModuleWrite(17, SPACE_BLOCKING, &uiDummy);
+      ModuleWrite(15, SPACE_BLOCKING, &uiDummy);
+      ModuleWrite(18, SPACE_BLOCKING, &uiDummy);
+
+      // Initialisation
+      found_mk = 0;
+
+      // Loop to find the maker
+      while (!found_mk)
+      {
+       marker = read_8_bits();
+
+       //Devrait seulement arriver à EOI marker
+       if (marker == 0xff)
+       {
+        pot_mark = read_8_bits();
+
+        if (pot_mark == 0)
+        {
+         unsigned int ff = 0xff;
+         ModuleWrite(20, SPACE_BLOCKING, &ff);
+        }
+        else
+        {
+         mark = 0xff00|pot_mark;
+         found_mk = 1;
+        }
+       }
+       else /* buf isn't 0xff */
+       {
+        ModuleWrite(20, SPACE_BLOCKING, &marker);
+       }
+      }
+
+      break;
+
+     // END OF IMAGE MARKER
+     case 0xFFD9 /* end of image		*/:
+
+      // Indique la fin de l'image
+      done = 1;
+      break;
+
+     // COMMMENT MARKER
+     case 0xFFFE /* commment segment	*/:
+
+      skip_segment();
+      break;
+
+     //
+     default:
+      if ((mark&0xFFF0) == 0xFFE0 /* custom, up to FFEF */)
+      {
+       shouldSkip = false;
+       skip_segment(); // Next segment
+      }
+      else if (( (0xFFF8&(mark)) == 0xFFD0 ))
+      {
+       computeFor(1);
+       break;
+      }
+      else
+      {
+       done = 1;
+       ++end_nb;
+       break;
+      }
+    }
+   }
+  }
+  // Waits for LIBU processing to be done
+  SpacePrint("Waits for LIBU...\n");
+  ModuleRead(18, SPACE_BLOCKING, &end);
+  SpacePrint("DEMUX sends END_APPLICATION\n");
+  // Exits the program
+  uiDummy = 4;
+  ModuleWrite(20, SPACE_BLOCKING, &uiDummy);
+  ModuleWrite(17, SPACE_BLOCKING, &uiDummy);
+  ModuleWrite(15, SPACE_BLOCKING, &uiDummy);
+ }
+ SpacePrint("DEMUX Exits\n");
+}
+
+// DEMUX::get_next_mk
+// ***********************************************************************
+///
+/// get_next_mk : returns the next marker in the MJPEGRAM (input image file)
+///
+/// @return =>  one byte of data
+///
+// ***********************************************************************
+unsigned short DEMUX::get_next_mk()
+{
+    unsigned char buffer = 0x00;
+    unsigned short returnValue;
+
+    while(buffer != 0xFF)
+    {
+     buffer = read_8_bits();
+    }
+
+    buffer = read_8_bits();
+    returnValue = 0xFF00 | buffer;
+
+    return returnValue;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+///
+/// skip_segment  -- Permet d'ignorer le segment en cours
+///
+///////////////////////////////////////////////////////////////////////////////
+void DEMUX::skip_segment()
+{
+ unsigned short size = 0;
+
+ // On lit la taille du segment (On enlève les 2 bytes pour la taille)
+    size = read_16_bits() - 2;
+
+ // On saute
+ skip_bytes(size);
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+///
+///	Détermine les informations dynamiquement
+///
+//////////////////////////////////////////////////////////////////////////////
+void DEMUX::find_info(void)
+{
+ // Variable
+ m_nbFrames = 3;
+ unsigned int nbHuff = 1;
+ unsigned int nbQuant = 1;
+
+ // Sending data to other modules
+ ModuleWrite(18, SPACE_BLOCKING, &m_nbFrames);
+
+
+
+ ModuleWrite(20, SPACE_BLOCKING, &nbHuff);
+ ModuleWrite(17, SPACE_BLOCKING, &nbQuant);
+
+ // Pointer to the beginning of the file
+ m_uiOffset = 0;
+}
+
+
+// DEMUX::read_8_bits
+// ***********************************************************************
+///
+/// read_8_bits : reads one byte from the MJPEGRAM (input image file)
+///
+/// @return =>  one byte of data
+///
+// ***********************************************************************
+unsigned char DEMUX::read_8_bits()
+{
+ unsigned char returnValue;
+ unsigned char byteAlignment = (m_uiOffset & 0x3);
+
+ // if the address is a multiple of 4 or if the buffer value is not valid,
+ // we need to read a new word (4 bytes) from memory
+ if (byteAlignment == 0 || !m_BufferValid)
+ {
+  eSpaceStatus eStatus = DeviceRead(11, m_uiOffset & 0xFFFFFFFC, &m_Buffer[0], 4);
+
+        if(eStatus == SPACE_OK)
+        {
+         m_BufferValid = true;
+        }
+        else
+        {
+         SpacePrint("DEMUX::read_8_bits - Error\n");
+         m_BufferValid = false;
+        }
+ }
+
+ returnValue = m_Buffer[byteAlignment];
+
+ m_uiOffset++; // increase offset to next byte
+
+ return returnValue;
+}
+
+
+// DEMUX::read_16_bits
+// ***********************************************************************
+///
+/// read_8_bits : reads two bytes from the MJPEGRAM (input image file)
+///
+/// @return =>  two bytes of data
+///
+// ***********************************************************************
+unsigned short DEMUX::read_16_bits()
+{
+ unsigned short returnValue;
+ unsigned char buffer_1;
+ unsigned char buffer_2;
+
+
+ buffer_1 = read_8_bits();
+ buffer_2 = read_8_bits();
+
+ returnValue = buffer_1 << 8;
+ returnValue |= buffer_2;
+
+ return (returnValue);
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+///
+///	Saute des octets
+///
+//////////////////////////////////////////////////////////////////////////////
+void DEMUX::skip_bytes(unsigned short NbBytes)
+{
+ m_uiOffset+=NbBytes;
+ m_BufferValid = false;
+}

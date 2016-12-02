@@ -1,0 +1,29 @@
+{
+  "type" : "record",
+  "name" : "SDLRegisterInfo",
+  "namespace" : "com.spacecodesign.s2.domain.config.generation.hw",
+  "fields" : [ {
+    "name" : "readPeriod",
+    "type" : {
+      "type" : "record",
+      "name" : "ClockPeriod",
+      "fields" : [ {
+        "name" : "period",
+        "type" : "int"
+      }, {
+        "name" : "unit",
+        "type" : {
+          "type" : "enum",
+          "name" : "TimeUnit",
+          "symbols" : [ "SC_FS", "SC_PS", "SC_NS", "SC_US", "SC_MS", "SC_SEC" ]
+        }
+      } ]
+    }
+  }, {
+    "name" : "writePeriod",
+    "type" : "ClockPeriod"
+  }, {
+    "name" : "latency",
+    "type" : "int"
+  } ]
+}

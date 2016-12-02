@@ -1,0 +1,12 @@
+################################################################################
+#
+# Filename : BRAM_LOADER.cpp.arm.dat
+#
+# Author : SpaceStudio generation engine
+#
+# Warning: This file content will be overwritten by the next generation process.
+#
+################################################################################
+DEVICE_WRITE	11	false	4	40	unsigned+char
+DEVICE_WRITE	11	false	4	47	unsigned+char
+MODULE_WRITE	14	true	-1	54	int

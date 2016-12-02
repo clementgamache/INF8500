@@ -1,0 +1,12 @@
+################################################################################
+#
+# Filename : COLOR_METRICS.cpp.arm.dat
+#
+# Author : SpaceStudio generation engine
+#
+# Warning: This file content will be overwritten by the next generation process.
+#
+################################################################################
+REGISTER_WRITE	10	false	-1	72	unsigned+long	0
+MODULE_READ	18	true	2400	77	struct-color_statistics-{int minR|int minG|int minB|int minA|int avgR|int avgG|int avgB|int avgA|int maxR|int maxG|int maxB|int maxA|}
+REGISTER_READ	10	false	-1	97	unsigned+long	1

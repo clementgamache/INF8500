@@ -1,0 +1,55 @@
+###################################################################
+##
+## Filename       : iss_adapter_v2_1_0.mpd
+##
+###################################################################
+##  Copyright 2011 - Space Codesign Systems, Inc.
+##  All rights reserved.
+###################################################################
+
+BEGIN iss_adapter
+
+## Peripheral Options
+OPTION IPTYPE = PERIPHERAL
+OPTION IMP_NETLIST = TRUE
+OPTION HDL = VHDL
+OPTION ARCH_SUPPORT_MAP = (OTHERS=DEVELOPMENT)
+OPTION IP_GROUP = USER
+
+## Generics for VHDL or Parameters for Verilog
+PARAMETER AWIDTH = 32, DT = INTEGER
+PARAMETER DWIDTH = 32, DT = INTEGER
+PARAMETER GEN_ID = 0, DT = INTEGER
+PARAMETER N_READ = 5, DT = INTEGER
+PARAMETER N_WRITE = 5, DT = INTEGER
+
+## Ports
+		
+PORT SBI_S_Address = "", DIR = I, VEC = [0:AWIDTH-1]
+PORT SBI_S_ReadEnable = "", DIR = I
+PORT SBI_S_ReadData = "", DIR = O, VEC = [0:DWIDTH-1]
+PORT SBI_S_WriteEnable = "", DIR = I
+PORT SBI_S_WriteData = "", DIR = I, VEC = [0:DWIDTH-1]
+PORT SBI_S_ByteEnable = "", DIR = I, VEC = [0:DWIDTH/8-1]
+PORT SBI_S_Ack = "", DIR = O
+
+PORT SBI_S_MUX_Address_Read = "", DIR = O, VEC = [0:N_READ*AWIDTH-1]
+PORT SBI_S_MUX_ReadEnable_Read = "", DIR = O, VEC = [0:N_READ-1]
+PORT SBI_S_MUX_ReadData_Read = "", DIR = I, VEC = [0:N_READ*DWIDTH-1]
+PORT SBI_S_MUX_WriteEnable_Read = "", DIR = O, VEC = [0:N_READ-1]
+PORT SBI_S_MUX_WriteData_Read = "", DIR = O, VEC = [0:N_READ*DWIDTH-1]
+PORT SBI_S_MUX_ByteEnable_Read = "", DIR = O, VEC = [0:N_READ*DWIDTH/8-1]
+PORT SBI_S_MUX_Ack_Read = "", DIR = I, VEC = [0:N_READ-1]
+
+PORT SBI_S_MUX_Address_Write = "", DIR = O, VEC = [0:N_WRITE*AWIDTH-1]
+PORT SBI_S_MUX_ReadEnable_Write = "", DIR = O, VEC = [0:N_WRITE-1]
+PORT SBI_S_MUX_ReadData_Write = "", DIR = I, VEC = [0:N_WRITE*DWIDTH-1]
+PORT SBI_S_MUX_WriteEnable_Write = "", DIR = O, VEC = [0:N_WRITE-1]
+PORT SBI_S_MUX_WriteData_Write = "", DIR = O, VEC = [0:N_WRITE*DWIDTH-1]
+PORT SBI_S_MUX_ByteEnable_Write = "", DIR = O, VEC = [0:N_WRITE*DWIDTH/8-1]
+PORT SBI_S_MUX_Ack_Write = "", DIR = I, VEC = [0:N_WRITE-1]
+
+PORT Clk = "", DIR = I
+PORT Reset = "", DIR = I
+
+END

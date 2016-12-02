@@ -1,0 +1,20 @@
+################################################################################
+#
+# Filename : IQZZ.cpp.mingw.dat
+#
+# Author : SpaceStudio generation engine
+#
+# Warning: This file content will be overwritten by the next generation process.
+#
+################################################################################
+MODULE_READ	14	true	-1	64	int
+MODULE_READ	14	true	-1	72	unsigned+int
+MODULE_READ	14	true	-1	79	unsigned+int
+MODULE_READ	14	true	-1	80	unsigned+int
+MODULE_READ	14	true	-1	84	unsigned+int
+MODULE_READ	14	true	-1	97	unsigned+long
+MODULE_READ	14	true	-1	126	unsigned+int
+MODULE_READ	20	true	128	148	short
+MODULE_WRITE	15	true	128	155	short
+MODULE_READ	14	true	-1	206	unsigned+long
+DEVICE_READ	11	false	4	254	unsigned+char

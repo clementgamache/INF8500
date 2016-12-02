@@ -1,0 +1,11 @@
+{
+  "readPeriod" : {
+    "period" : 10,
+    "unit" : "SC_NS"
+  },
+  "writePeriod" : {
+    "period" : 10,
+    "unit" : "SC_NS"
+  },
+  "latency" : 1
+}

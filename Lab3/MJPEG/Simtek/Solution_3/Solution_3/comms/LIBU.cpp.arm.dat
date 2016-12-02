@@ -1,0 +1,38 @@
+################################################################################
+#
+# Filename : LIBU.cpp.arm.dat
+#
+# Author : SpaceStudio generation engine
+#
+# Warning: This file content will be overwritten by the next generation process.
+#
+################################################################################
+MODULE_READ	14	true	-1	64	unsigned+int
+MODULE_WRITE	19	true	-1	68	unsigned+long
+MODULE_READ	14	true	-1	74	unsigned+int
+MODULE_READ	14	true	-1	87	unsigned+int
+MODULE_READ	14	true	-1	88	unsigned+int
+MODULE_READ	14	true	-1	89	unsigned+int
+MODULE_READ	14	true	-1	90	unsigned+int
+MODULE_READ	14	true	-1	92	unsigned+int
+MODULE_READ	14	true	-1	96	unsigned+int
+MODULE_READ	15	true	64	126	unsigned+char
+MODULE_READ	15	true	64	132	unsigned+char
+MODULE_READ	15	true	64	134	unsigned+char
+MODULE_WRITE	13	true	-1	205	int
+MODULE_WRITE	13	true	-1	206	int
+MODULE_WRITE	13	true	-1	207	int
+MODULE_WRITE	13	true	-1	208	int
+MODULE_WRITE	13	true	-1	215	int
+MODULE_WRITE	13	true	-1	216	int
+MODULE_WRITE	13	true	-1	217	int
+MODULE_WRITE	13	true	-1	218	int
+MODULE_WRITE	13	true	-1	220	int
+MODULE_WRITE	13	true	-1	221	int
+MODULE_WRITE	13	true	-1	222	int
+MODULE_WRITE	13	true	-1	223	int
+MODULE_WRITE	19	true	-1	229	unsigned+long
+MODULE_WRITE	19	true	-1	247	unsigned+long
+MODULE_WRITE	14	true	-1	250	unsigned+long
+REGISTER_WRITE	10	false	-1	251	unsigned+long	1
+MODULE_WRITE	13	false	-1	255	int

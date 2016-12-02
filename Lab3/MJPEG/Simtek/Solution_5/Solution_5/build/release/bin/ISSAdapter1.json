@@ -1,0 +1,22 @@
+{
+  "readInterfaceFIFOs" : [ {
+    "readerId" : 13,
+    "writerId" : 18
+  }, {
+    "readerId" : 17,
+    "writerId" : 20
+  }, {
+    "readerId" : 19,
+    "writerId" : 18
+  } ],
+  "writeInterfaceFIFOs" : [ {
+    "readerId" : 13,
+    "writerId" : 18
+  }, {
+    "readerId" : 17,
+    "writerId" : 20
+  }, {
+    "readerId" : 19,
+    "writerId" : 18
+  } ]
+}

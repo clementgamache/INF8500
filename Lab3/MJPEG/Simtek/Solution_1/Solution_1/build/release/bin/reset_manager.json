@@ -1,0 +1,8 @@
+{
+  "reset_after" : 0,
+  "reset_hold" : 1,
+  "running_verbose" : {
+    "period" : 10,
+    "unit" : "SC_MS"
+  }
+}

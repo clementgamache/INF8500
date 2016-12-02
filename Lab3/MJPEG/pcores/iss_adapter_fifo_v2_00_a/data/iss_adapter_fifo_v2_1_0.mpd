@@ -1,0 +1,50 @@
+###################################################################
+##
+## Filename       : iss_adapter_fifo_v2_1_0.mpd
+##
+###################################################################
+##  Copyright 2011 - Space Codesign Systems, Inc.
+##  All rights reserved.
+###################################################################
+
+BEGIN iss_adapter_fifo
+
+## Peripheral Options
+OPTION IPTYPE = PERIPHERAL
+OPTION IMP_NETLIST = TRUE
+OPTION HDL = VHDL
+OPTION ARCH_SUPPORT_MAP = (OTHERS=DEVELOPMENT)
+OPTION IP_GROUP = USER
+OPTION STYLE = MIX
+
+## Generics for VHDL or Parameters for Verilog
+PARAMETER AWIDTH = 32, DT = INTEGER
+PARAMETER DWIDTH = 32, DT = INTEGER
+PARAMETER GEN_ID = 0, DT = INTEGER
+
+## Ports
+
+PORT SBI_S_Clk_Read = "", DIR = I	
+PORT SBI_S_Address_Read = "", DIR = I, VEC = [0:AWIDTH-1]
+PORT SBI_S_ReadEnable_Read = "", DIR = I
+PORT SBI_S_ReadData_Read = "", DIR = O, VEC = [0:DWIDTH-1]
+PORT SBI_S_WriteEnable_Read = "", DIR = I
+PORT SBI_S_WriteData_Read = "", DIR = I, VEC = [0:DWIDTH-1]
+PORT SBI_S_ByteEnable_Read = "", DIR = I, VEC = [0:DWIDTH/8-1]
+PORT SBI_S_Ack_Read = "", DIR = O
+
+PORT SBI_S_Clk_Write = "", DIR = I
+PORT SBI_S_Address_Write = "", DIR = I, VEC = [0:AWIDTH-1]
+PORT SBI_S_ReadEnable_Write = "", DIR = I
+PORT SBI_S_ReadData_Write = "", DIR = O, VEC = [0:DWIDTH-1]
+PORT SBI_S_WriteEnable_Write = "", DIR = I
+PORT SBI_S_WriteData_Write = "", DIR = I, VEC = [0:DWIDTH-1]
+PORT SBI_S_ByteEnable_Write = "", DIR = I, VEC = [0:DWIDTH/8-1]
+PORT SBI_S_Ack_Write = "", DIR = O
+
+PORT IRQHasRoom	= "", DIR = O, SIGIS = INTERRUPT
+PORT IRQHasData	= "", DIR = O, SIGIS = INTERRUPT
+
+PORT Reset = "", DIR = I
+
+END	

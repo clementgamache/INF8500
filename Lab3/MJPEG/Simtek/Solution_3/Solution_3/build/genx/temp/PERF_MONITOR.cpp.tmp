@@ -1,0 +1,1689 @@
+# 1 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdc-predef.h" 1 3 4
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+
+
+
+
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+# 52 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdc-predef.h" 3 4
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+
+
+/* We do not support C11 <threads.h>.  */
+# 1 "<command-line>" 2
+# 1 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp"
+///////////////////////////////////////////////////////////////////////////////
+//
+// Filename : PERF_MONITOR.cpp
+//
+// Creation date : Tue May 24 15:30:15 EDT 2016
+//
+///////////////////////////////////////////////////////////////////////////////
+#include "PERF_MONITOR.h"
+# 8 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp"
+# 1 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.h" 1
+///////////////////////////////////////////////////////////////////////////////
+//
+// Filename : PERF_MONITOR.h
+//
+// Creation date : Tue May 24 15:30:15 EDT 2016
+//
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+#include "SpaceBaseModule.h"
+# 11 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceBaseModule.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+#include "SpaceTypes.h"
+# 15 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceBaseModule.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceTypes.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+///\class     SPACE_STATUS
+///
+///\brief     Status returned by the Space Codesign engined for end users
+///
+///////////////////////////////////////////////////////////////////////////////
+static const unsigned char SPACE_OK = 0; ///< Tells the operation was completed successfully
+static const unsigned char SPACE_ERROR = 1; ///< Tells the operation did not complete and simulation 
+static const unsigned char SPACE_EMPTY = 2; ///< may be corrupted or may fail
+static const unsigned char SPACE_FULL = 3; ///> Tells the operation cannot be completed because no storage is available
+static const unsigned char SPACE_NOT_CONNECTED = 99; ///< REports an access to an unconnected port
+
+typedef unsigned char eSpaceStatus;
+
+
+///////////////////////////////////////////////////////////////////////////////
+///\enum     SpaceChannelStatusStr
+///
+///\brief    Statuses returned when using Space Interface Methods
+///////////////////////////////////////////////////////////////////////////////
+typedef enum
+{
+/**** for platform ****/
+ SPACE_CHANNEL_OK = 0, // Was successfully completed from end to end
+ SPACE_CHANNEL_FULL = 1, // Channel is FULL and write operation was cancelled
+ SPACE_CHANNEL_EMPTY = 2, // Nothing to read and data pointer is invalid
+ SPACE_CHANNEL_UNUSED_STATUS_1 = 3, // Currently unused status code
+
+ SPACE_CHANNEL_UNUSED_STATUS_2 = 4, // Currently unused status code
+    SPACE_CHANNEL_ADDR_OUT_OF_RANGE = 5, // Destination Address was out of range
+
+ SPACE_CHANNEL_ERROR = 6, // An unrecoverable error from which the system cannot recover occured
+          // Users receiving this error are recommended to stop the simulation
+ SPACE_CHANNEL_TERMINATOR_ACCESS = 7, // An unbound port was accessed. 
+          // Users receiving this error are recommended to stop the simulation
+
+    SPACE_CHANNEL_MSG_SIZE_ERROR = 8, // Platform: Unsupported Size of Request
+    SPACE_CHANNEL_NO_QUEUE_AVAILABLE = 9, // SW:No queue available in FreeQueuePool (in the case of writing)
+ SPACE_CHANNEL_UNUSED_STATUS_4 = 10, // Currently unused status code
+
+ /**** for RTL ****/
+ SPACE_CHANNEL_IN_PROGRESS = 11, // Request currently being processed
+
+
+/**** NEW ****/
+
+ SPACE_UNKNOWN_DESTINATION = 12,
+ SPACE_INVALID_OFFSET = 13
+
+
+} eSpaceChannelStatus;
+
+
+///////////////////////////////////////////////////////////////////////////////
+///\enum     eSpaceTransactionType
+///
+///\brief    SPACE Transaction options. 
+///\note     Updated with unsigned long type. 
+///////////////////////////////////////////////////////////////////////////////
+static const unsigned long SPACE_NON_BLOCKING = 0; ///< Indicates the transaction is non blocking
+static const unsigned long SPACE_NO_WAIT = 0;
+static const unsigned long SPACE_BLOCKING = 0xFFFFFFFF; ///< Indicates the transaction is blocking
+static const unsigned long SPACE_WAIT_FOREVER = 0xFFFFFFFF;
+
+typedef unsigned long eSpaceTransactionType;
+
+
+///////////////////////////////////////////////////////////////////////////////
+///\class     enum eSpaceComponentType
+///
+///\brief     Descriptor found in eSpaceComponentType representing either
+///           a module or a device 
+///////////////////////////////////////////////////////////////////////////////
+typedef enum
+{
+    SPACE_UNREGISTERED = 0,
+    SPACE_MODULE = 1,
+    SPACE_DEVICE = 2,
+    //SPACE_MODULE_ADAPTER = 3,
+ SPACE_ISS_ADAPTER = 4,
+ SPACE_REGISTER_FILE = 5,
+ SPACE_SLAVE_BRIDGE = 6
+} eSpaceComponentType;
+
+
+///////////////////////////////////////////////////////////////////////////////
+///\enum      eSpaceCommunicationType
+///
+///\brief      SPACE communication types
+///////////////////////////////////////////////////////////////////////////////
+typedef enum
+{
+ SPACE_MODULE_READ = 0,
+ SPACE_MODULE_WRITE = 1,
+ SPACE_DEVICE_READ = 2,
+ SPACE_DEVICE_WRITE = 3,
+ SPACE_REGISTER_READ = 4,
+ SPACE_REGISTER_WRITE = 5,
+ SPACE_UNKNOWN_COMMUNICATION = 0xFF
+} eSpaceCommunicationType;
+
+
+
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 16 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceBaseModule.h" 2
+
+#include "sc_module.h"
+# 17 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceBaseModule.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/sc_module.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+class EntryClass;
+namespace sc_core {
+
+typedef const char* sc_module_name;
+
+
+
+
+
+class sc_module {
+ private:
+
+  EntryClass* m_class_info;
+  bool m_verbose;
+  int m_thread_count;
+  unsigned char m_id;
+  unsigned char m_priority;
+  const char* m_name;
+
+ public:
+  static int m_system_thread_count;
+
+  sc_module(const char* name, unsigned char id, unsigned char priority, bool verbose = false);
+
+  static void Initialize(void);
+
+  inline unsigned char GetID(void) { return m_id; };
+  inline unsigned char GetPriority(void) { return m_priority; };
+  inline const char* name() const { return m_name; }
+  inline bool GetVerbose(void) { return m_verbose; }
+
+  void SpaceThread(void (sc_module::* f)(void));
+};
+}
+
+
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 18 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceBaseModule.h" 2
+#include "sc_start.h"
+# 18 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceBaseModule.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/sc_start.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///\\file   sc_start.h
+///\\brief  Contains sc_start and sc_stop routines.
+///
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+
+namespace sc_core {
+
+//
+//  sc_start
+//////////////////////////////////////////////////////////////////////////////
+/// 
+/// Start the software scheduler (RTOS)
+///
+/// @return =>  None.
+///
+/// @note   => The software simulation must begin here because sc_main
+///				method should not return. Else the application software module
+///				(created in sc_main) will be cleared.
+//////////////////////////////////////////////////////////////////////////////
+void sc_start(void);
+
+
+//
+//  sc_stop
+//////////////////////////////////////////////////////////////////////////////
+/// 
+/// Stop the software scheduler
+/// 
+///
+/// @return =>  none
+///
+/// @note   =>  Send an stop request to the SystemC simulation.
+//////////////////////////////////////////////////////////////////////////////
+void sc_stop(void);
+
+} // namespace sc_core
+
+
+
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 19 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceBaseModule.h" 2
+#include "sc_time.h"
+# 19 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceBaseModule.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/sc_time.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///\\file   sc_time.h
+///\\brief  Defines the sc_module class prototype. The class structure follows
+///\brief   the systemC structure so as to be compliant 
+///
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+
+namespace sc_core {
+
+typedef unsigned long sc_time;
+
+//
+// sc_time_stamp
+//////////////////////////////////////////////////////////////////////////////
+///
+/// Allow user to print the current time (i.e. SystemC cycles) 
+///
+///
+/// @note   =>  
+//////////////////////////////////////////////////////////////////////////////
+sc_time sc_time_stamp();
+
+
+
+// ----------------------------------------------------------------------------
+//  ENUM : sc_time_unit
+//
+//  Enumeration of time units.
+// ----------------------------------------------------------------------------
+
+enum sc_time_unit
+{
+    SC_FS = 0,
+    SC_PS,
+    SC_NS,
+    SC_US,
+    SC_MS,
+    SC_SEC
+};
+
+} // namespace sc_core
+
+
+
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 20 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceBaseModule.h" 2
+#include "sc_wait.h"
+# 20 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceBaseModule.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/sc_wait.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+namespace sc_core {
+void wait(int iTickNum);
+void wait(void);
+}
+
+
+
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 21 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceBaseModule.h" 2
+
+
+
+using sc_core::sc_stop;
+using sc_core::wait;
+# 34 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceBaseModule.h"
+template <typename T> extern eSpaceStatus ModuleRead(unsigned char destination_id, unsigned long timeout, T* data, unsigned long nb_elements = 1);
+template <typename T> extern eSpaceStatus ModuleWrite(unsigned char destination_id, unsigned long timeout, T* data, unsigned long nb_elements = 1);
+
+inline void SPACE_REGISTER_RANGE(unsigned long minimum_register_id, unsigned long maximum_register_id) {}
+extern eSpaceStatus RegisterRead(unsigned char register_file_id, unsigned long register_id, unsigned long* data);
+extern eSpaceStatus RegisterWrite(unsigned char register_file_id, unsigned long register_id, unsigned long* data);
+
+template <typename T> extern eSpaceStatus DeviceRead(unsigned char destination_id, unsigned long offset, T* data, unsigned long nb_elements = 1);
+template <typename T> extern eSpaceStatus DeviceWrite(unsigned char destination_id, unsigned long offset, T* data, unsigned long nb_elements = 1);
+
+extern eSpaceStatus Memory2Stream(unsigned long source_address, unsigned char destination_id, unsigned long timeout, unsigned long bytes);
+extern eSpaceStatus Stream2Memory(unsigned char source_id, unsigned long destination_address, unsigned long timeout, unsigned long bytes);
+extern eSpaceStatus Memory2Memory(unsigned long source_address, unsigned long destination_address, unsigned long timeout, unsigned long bytes);
+
+class SpaceBaseModule: public sc_core::sc_module {
+ public:
+  SpaceBaseModule(const char* name, double clock_period, sc_core::sc_time_unit clock_unit, unsigned char id, unsigned char priority, bool verbose = false);
+
+};
+
+
+
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 12 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.h" 2
+
+#include "systemc"
+# 13 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/systemc" 1
+///////////////////////////////////////////////////////////////////////////////
+///\\file     systemc.h
+///\\brief    This file contains usefull includes for user application.
+///\brief     The user should include this file only.
+///
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+// files in .\sysc\kernel directory
+#include "sc_module.h"
+# 22 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/systemc"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/sc_module.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+# 51 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/sc_module.h"
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 23 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/systemc" 2
+#include "sc_wait.h"
+# 23 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/systemc"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/sc_wait.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+# 22 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/sc_wait.h"
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 24 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/systemc" 2
+#include "sc_time.h"
+# 24 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/systemc"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/sc_time.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///\\file   sc_time.h
+///\\brief  Defines the sc_module class prototype. The class structure follows
+///\brief   the systemC structure so as to be compliant 
+///
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+# 56 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/sc_time.h"
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 25 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/systemc" 2
+#include "sc_start.h"
+# 25 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/systemc"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/sc_start.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///\\file   sc_start.h
+///\\brief  Contains sc_start and sc_stop routines.
+///
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+# 52 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/sc_start.h"
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 26 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/systemc" 2
+
+
+
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 14 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.h" 2
+
+#include "genx_throughput.h"
+# 15 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.h"
+# 1 "C:/TEMP/MJPEG/import/src/genx_throughput.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///
+///         Space Codesign System Inc. - (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2012
+///
+///         No authorization to modify or use this file for
+///         commercial purposes without prior written consentement
+///         of its author(s)
+///
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+#include "throughput_if.h"
+# 14 "C:/TEMP/MJPEG/import/src/genx_throughput.h"
+# 1 "C:/TEMP/MJPEG/import/src/throughput_if.h" 1
+
+
+
+typedef struct {
+ double throughput;
+ double delta_time;
+} throughput_stat;
+
+class throughput_if {
+ public:
+
+  virtual ~throughput_if() {}
+  virtual throughput_stat get_throughput() = 0;
+  virtual void reset() = 0;
+};
+# 15 "C:/TEMP/MJPEG/import/src/genx_throughput.h" 2
+
+class genx_throughput: public throughput_if {
+
+ public:
+  genx_throughput();
+  virtual ~genx_throughput();
+
+  virtual throughput_stat get_throughput();
+  virtual void reset() { m_throughput->reset(); }
+
+ private:
+  throughput_if* m_throughput;
+};
+# 16 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.h" 2
+#include "simtek_throughput.h"
+# 16 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.h"
+# 1 "C:/TEMP/MJPEG/import/src/simtek_throughput.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///
+///         Space Codesign System Inc. - (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2012
+///
+///         No authorization to modify or use this file for
+///         commercial purposes without prior written consentement
+///         of its author(s)
+///
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+#include "throughput_if.h"
+
+class PERF_MONITOR;
+class simtek_throughput: public throughput_if {
+
+ public:
+  simtek_throughput(PERF_MONITOR*);
+  virtual ~simtek_throughput();
+
+  virtual throughput_stat get_throughput();
+  virtual void reset() { m_throughput->reset(); }
+  unsigned long long get_timer_value();
+
+ private:
+  throughput_if* m_throughput;
+  PERF_MONITOR* m_proxy;
+};
+# 17 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.h" 2
+
+class PERF_MONITOR: public SpaceBaseModule {
+ public:
+
+     typedef PERF_MONITOR MODULE_NAME;
+
+     PERF_MONITOR(sc_core::sc_module_name name, double period, sc_core::sc_time_unit unit, unsigned char id, unsigned char priority, bool verbose);
+
+     void thread(void);
+     unsigned long long get_timer_value();
+};
+# 9 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp" 2
+
+#include "PlatformDefinitions.h"
+# 10 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp"
+# 1 "./PlatformDefinitions.h" 1
+// ***********************************************************************
+//
+// Filename: 		PlatformDefinitions.h
+//
+// Level:			Simtek
+//
+// Author: 			SpaceStudio generation engine
+//
+// Warning: 
+// ========
+//			1) This file content will be overwritten by the next generation process.
+//			2) All the ID must be unique to the current project.
+//
+// ***********************************************************************
+
+
+
+
+//Level of technology of this platform
+
+
+// User's Module ID
+# 32 "./PlatformDefinitions.h"
+// User's Device(and Wrapper) ID
+
+
+// User's Module priority
+# 45 "./PlatformDefinitions.h"
+// User's Device(and Wrapper) priority
+
+// SpaceComponents IDs
+# 70 "./PlatformDefinitions.h"
+// SpaceComponents PRIOs
+
+
+// Memories' size
+# 11 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp" 2
+#include "ApplicationDefinitions.h"
+# 11 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp"
+# 1 "C:/TEMP/MJPEG/src/application/ApplicationDefinitions.h" 1
+// ***********************************************************************
+//
+// Filename: 		ApplicationDefinitions.h
+//
+// Author: 			SpaceStudio generation engine
+//
+// Creation date: 	Fri Oct 07 11:16:52 EDT 2016
+//
+// Warning: 		This file will not be overwritten by the SpaceStudio 
+//					generation engine.
+//
+// Note:			This file is automatically added in a new project or in an 
+//					existing project only if this file is not already present.
+//					Otherwise, this file remains untouched by the SpaceStudio 
+//					generation engine.  So this is a good place to declare 
+//					variables that are specific to your application and that 
+//					you need to share between your configurations.
+//
+// ***********************************************************************
+
+
+
+
+
+
+
+#include <stdint.h>
+# 27 "C:/TEMP/MJPEG/src/application/ApplicationDefinitions.h"
+# 1 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\lib\\gcc\\arm-unknown-linux-gnueabi\\4.8.3\\include\\stdint.h" 1 3 4
+# 9 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\lib\\gcc\\arm-unknown-linux-gnueabi\\4.8.3\\include\\stdint.h" 3 4
+#include_next <stdint.h>
+# 9 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\lib\\gcc\\arm-unknown-linux-gnueabi\\4.8.3\\include\\stdint.h" 3 4
+# 1 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdint.h" 1 3 4
+/* Copyright (C) 1997-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+
+/*
+ *	ISO C99: 7.18 Integer types <stdint.h>
+ */
+
+
+
+
+#include <features.h>
+# 25 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdint.h" 3 4
+# 1 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\features.h" 1 3 4
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+
+
+
+
+/* These are defined by the user (or the compiler)
+   to specify the desired environment:
+
+   __STRICT_ANSI__	ISO Standard C.
+   _ISOC99_SOURCE	Extensions to ISO C89 from ISO C99.
+   _ISOC11_SOURCE	Extensions to ISO C99 from ISO C11.
+   _POSIX_SOURCE	IEEE Std 1003.1.
+   _POSIX_C_SOURCE	If ==1, like _POSIX_SOURCE; if >=2 add IEEE Std 1003.2;
+			if >=199309L, add IEEE Std 1003.1b-1993;
+			if >=199506L, add IEEE Std 1003.1c-1995;
+			if >=200112L, all of IEEE 1003.1-2004
+			if >=200809L, all of IEEE 1003.1-2008
+   _XOPEN_SOURCE	Includes POSIX and XPG things.  Set to 500 if
+			Single Unix conformance is wanted, to 600 for the
+			sixth revision, to 700 for the seventh revision.
+   _XOPEN_SOURCE_EXTENDED XPG things and X/Open Unix extensions.
+   _LARGEFILE_SOURCE	Some more functions for correct standard I/O.
+   _LARGEFILE64_SOURCE	Additional functionality from LFS for large files.
+   _FILE_OFFSET_BITS=N	Select default filesystem interface.
+   _BSD_SOURCE		ISO C, POSIX, and 4.3BSD things.
+   _SVID_SOURCE		ISO C, POSIX, and SVID things.
+   _ATFILE_SOURCE	Additional *at interfaces.
+   _GNU_SOURCE		All of the above, plus GNU extensions.
+   _DEFAULT_SOURCE	The default set of features (taking precedence over
+			__STRICT_ANSI__).
+   _REENTRANT		Select additionally reentrant object.
+   _THREAD_SAFE		Same as _REENTRANT, often used by other systems.
+   _FORTIFY_SOURCE	If set to numeric value > 0 additional security
+			measures are defined, according to level.
+
+   The `-ansi' switch to the GNU C compiler, and standards conformance
+   options such as `-std=c99', define __STRICT_ANSI__.  If none of
+   these are defined, or if _DEFAULT_SOURCE is defined, the default is
+   to have _SVID_SOURCE, _BSD_SOURCE, and _POSIX_SOURCE set to one and
+   _POSIX_C_SOURCE set to 200809L.  If more than one of these are
+   defined, they accumulate.  For example __STRICT_ANSI__,
+   _POSIX_SOURCE and _POSIX_C_SOURCE together give you ISO C, 1003.1,
+   and 1003.2, but nothing else.
+
+   These are defined by this file and are used by the
+   header files to decide what to declare or define:
+
+   __USE_ISOC11		Define ISO C11 things.
+   __USE_ISOC99		Define ISO C99 things.
+   __USE_ISOC95		Define ISO C90 AMD1 (C95) things.
+   __USE_POSIX		Define IEEE Std 1003.1 things.
+   __USE_POSIX2		Define IEEE Std 1003.2 things.
+   __USE_POSIX199309	Define IEEE Std 1003.1, and .1b things.
+   __USE_POSIX199506	Define IEEE Std 1003.1, .1b, .1c and .1i things.
+   __USE_XOPEN		Define XPG things.
+   __USE_XOPEN_EXTENDED	Define X/Open Unix things.
+   __USE_UNIX98		Define Single Unix V2 things.
+   __USE_XOPEN2K        Define XPG6 things.
+   __USE_XOPEN2KXSI     Define XPG6 XSI things.
+   __USE_XOPEN2K8       Define XPG7 things.
+   __USE_XOPEN2K8XSI    Define XPG7 XSI things.
+   __USE_LARGEFILE	Define correct standard I/O things.
+   __USE_LARGEFILE64	Define LFS things with separate names.
+   __USE_FILE_OFFSET64	Define 64bit interface as default.
+   __USE_BSD		Define 4.3BSD things.
+   __USE_SVID		Define SVID things.
+   __USE_MISC		Define things common to BSD and System V Unix.
+   __USE_ATFILE		Define *at interfaces and AT_* constants for them.
+   __USE_GNU		Define GNU extensions.
+   __USE_REENTRANT	Define reentrant/thread-safe *_r functions.
+   __USE_FORTIFY_LEVEL	Additional security measures used, according to level.
+
+   The macros `__GNU_LIBRARY__', `__GLIBC__', and `__GLIBC_MINOR__' are
+   defined by this file unconditionally.  `__GNU_LIBRARY__' is provided
+   only for compatibility.  All new code should use the other symbols
+   to test for features.
+
+   All macros listed above as possibly being defined by this file are
+   explicitly undefined if they are not explicitly defined.
+   Feature-test macros that are not defined by the user or compiler
+   but are implied by the other feature-test macros defined (or by the
+   lack of any definitions) are defined by the file.  */
+
+
+/* Undefine everything, so we get a clean slate.  */
+# 128 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\features.h" 3 4
+/* Suppress kernel-name space pollution unless user expressedly asks
+   for it.  */
+
+
+
+
+/* Convenience macros to test the versions of glibc and gcc.
+   Use them like this:
+   #if __GNUC_PREREQ (2,8)
+   ... code requiring gcc 2.8 or later ...
+   #endif
+   Note - they won't work for gcc1 or glibc1, since the _MINOR macros
+   were not defined then.  */
+# 149 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\features.h" 3 4
+/* If _GNU_SOURCE was defined by the user, turn on all the other features.  */
+# 177 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\features.h" 3 4
+/* If nothing (other than _GNU_SOURCE and _DEFAULT_SOURCE) is defined,
+   define _DEFAULT_SOURCE, _BSD_SOURCE and _SVID_SOURCE.  */
+# 193 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\features.h" 3 4
+/* This is to enable the ISO C11 extension.  */
+
+
+
+
+
+/* This is to enable the ISO C99 extension.  */
+
+
+
+
+
+/* This is to enable the ISO C90 Amendment 1:1995 extension.  */
+
+
+
+
+
+/* This is to enable compatibility for ISO C++11.
+
+   So far g++ does not provide a macro.  Check the temporary macro for
+   now, too.  */
+
+
+
+
+
+/* If none of the ANSI/POSIX macros are defined, or if _DEFAULT_SOURCE
+   is defined, use POSIX.1-2008 (or another version depending on
+   _XOPEN_SOURCE).  */
+# 354 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\features.h" 3 4
+/* Get definitions of __STDC_* predefined macros, if the compiler has
+   not preincluded this header automatically.  */
+#include <stdc-predef.h>
+# 356 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\features.h" 3 4
+# 1 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdc-predef.h" 1 3 4
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+# 357 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\features.h" 2 3 4
+
+/* This macro indicates that the installed library is the GNU C Library.
+   For historic reasons the value now is 6 and this will stay from now
+   on.  The use of this variable is deprecated.  Use __GLIBC__ and
+   __GLIBC_MINOR__ now (see below) when you want to test for a specific
+   GNU C library version and use the values in <gnu/lib-names.h> to get
+   the sonames of the shared libraries.  */
+
+
+
+/* Major and minor version number of the GNU C library package.  Use
+   these macros to test for features in specific releases.  */
+
+
+
+
+
+
+/* This is here only because every header file already includes this one.  */
+
+
+#include <sys/cdefs.h>
+# 378 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\features.h" 3 4
+# 1 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\sys\\cdefs.h" 1 3 4
+/* Copyright (C) 1992-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+
+
+
+
+/* We are almost always included from features.h. */
+
+
+
+
+/* The GNU libc does not support any K&R compilers or the traditional mode
+   of ISO C compilers anymore.  Check for some of the combinations not
+   anymore supported.  */
+
+
+
+
+/* Some user header file might have defined this before.  */
+
+
+
+
+
+/* All functions, except those with callbacks or those that
+   synchronize memory, are leaf functions.  */
+# 49 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\sys\\cdefs.h" 3 4
+/* GCC can always grok prototypes.  For C++ programs we add throw()
+   to help it optimize the function calls.  But this works only with
+   gcc 2.8.x and egcs.  For gcc 3.2 and up we even mark C functions
+   as non-throwing using a function attribute since programs can use
+   the -fexceptions options for C code as well.  */
+# 80 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\sys\\cdefs.h" 3 4
+/* These two macros are not used in glibc anymore.  They are kept here
+   only because some other projects expect the macros to be defined.  */
+
+
+
+/* For these things, GCC behaves the ANSI way normally,
+   and the non-ANSI way under -traditional.  */
+
+
+
+
+/* This is not a typedef so `const __ptr_t' does the right thing.  */
+
+
+
+
+/* C++ needs to know that types and declarations are C, not C++.  */
+# 106 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\sys\\cdefs.h" 3 4
+/* The standard library needs the functions from the ISO C90 standard
+   in the std namespace.  At the same time we want to be safe for
+   future changes and we include the ISO C99 code in the non-standard
+   namespace __c99.  The C++ wrapper header take case of adding the
+   definitions to the global namespace.  */
+# 119 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\sys\\cdefs.h" 3 4
+/* For compatibility we do not add the declarations into any
+   namespace.  They will end up in the global namespace which is what
+   old code expects.  */
+# 131 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\sys\\cdefs.h" 3 4
+/* Fortify support.  */
+# 148 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\sys\\cdefs.h" 3 4
+/* Support for flexible arrays.  */
+
+/* GCC 2.97 supports C99 flexible array members.  */
+# 166 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\sys\\cdefs.h" 3 4
+/* __asm__ ("xyz") is used throughout the headers to rename functions
+   at the assembly language level.  This is wrapped by the __REDIRECT
+   macro, in order to support compilers that can do this some other
+   way.  When compilers don't support asm-names at all, we have to do
+   preprocessor tricks instead (which don't have exactly the right
+   semantics, but it's the best we can do).
+
+   Example:
+   int __REDIRECT(setpgrp, (__pid_t pid, __pid_t pgrp), setpgid); */
+# 193 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\sys\\cdefs.h" 3 4
+/*
+#elif __SOME_OTHER_COMPILER__
+
+# define __REDIRECT(name, proto, alias) name proto; 	_Pragma("let " #name " = " #alias)
+)
+*/
+
+
+/* GCC has various useful declarations that can be made with the
+   `__attribute__' syntax.  All of the ways we use this do fine if
+   they are omitted for compilers that don't understand it. */
+
+
+
+
+/* At some point during the gcc 2.96 development the `malloc' attribute
+   for functions was introduced.  We don't want to use it unconditionally
+   (although this would be possible) since it generates warnings.  */
+
+
+
+
+
+
+/* Tell the compiler which arguments to an allocation function
+   indicate the size of the allocation.  */
+
+
+
+
+
+
+
+/* At some point during the gcc 2.96 development the `pure' attribute
+   for functions was introduced.  We don't want to use it unconditionally
+   (although this would be possible) since it generates warnings.  */
+
+
+
+
+
+
+/* This declaration tells the compiler that the value is constant.  */
+
+
+
+
+
+
+/* At some point during the gcc 3.1 development the `used' attribute
+   for functions was introduced.  We don't want to use it unconditionally
+   (although this would be possible) since it generates warnings.  */
+# 253 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\sys\\cdefs.h" 3 4
+/* gcc allows marking deprecated functions.  */
+
+
+
+
+
+
+/* At some point during the gcc 2.8 development the `format_arg' attribute
+   for functions was introduced.  We don't want to use it unconditionally
+   (although this would be possible) since it generates warnings.
+   If several `format_arg' attributes are given for the same function, in
+   gcc-3.0 and older, all but the last one are ignored.  In newer gccs,
+   all designated arguments are considered.  */
+
+
+
+
+
+
+/* At some point during the gcc 2.97 development the `strfmon' format
+   attribute for functions was introduced.  We don't want to use it
+   unconditionally (although this would be possible) since it
+   generates warnings.  */
+
+
+
+
+
+
+
+/* The nonull function attribute allows to mark pointer parameters which
+   must not be NULL.  */
+
+
+
+
+
+
+/* If fortification mode, we warn about unused results of certain
+   function calls which can lead to problems.  */
+# 306 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\sys\\cdefs.h" 3 4
+/* Forces a function to be always inlined.  */
+
+
+
+
+
+
+/* Associate error messages with the source location of the call site rather
+   than with the source location inside the function.  */
+
+
+
+
+
+
+
+/* One of these will be defined if the __gnu_inline__ attribute is
+   available.  In C++, __GNUC_GNU_INLINE__ will be defined even though
+   __inline does not use the GNU inlining rules.  If neither macro is
+   defined, this version of GCC only supports GNU inline semantics. */
+# 339 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\sys\\cdefs.h" 3 4
+/* GCC 4.3 and above allow passing all anonymous arguments of an
+   __extern_always_inline function to some other vararg function.  */
+
+
+
+
+
+/* It is possible to compile containing GCC extensions even if GCC is
+   run in pedantic mode if the uses are carefully marked using the
+   `__extension__' keyword.  But this is not generally available before
+   version 2.8.  */
+
+
+
+
+/* __restrict is known in EGCS 1.2 and above. */
+
+
+
+
+/* ISO C99 also allows to declare arrays as non-overlapping.  The syntax is
+     array_name[restrict]
+   GCC 3.1 supports this.  */
+# 385 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\sys\\cdefs.h" 3 4
+#include <bits/wordsize.h>
+# 385 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\sys\\cdefs.h" 3 4
+# 1 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\bits\\wordsize.h" 1 3 4
+/* Copyright (C) 1999-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+# 386 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\sys\\cdefs.h" 2 3 4
+# 379 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\features.h" 2 3 4
+
+
+/* If we don't have __REDIRECT, prototypes will be missing if
+   __USE_FILE_OFFSET64 but not __USE_LARGEFILE[64]. */
+
+
+
+
+
+
+
+/* Decide whether we can define 'extern inline' functions in headers.  */
+
+
+
+
+
+
+
+/* This is here only because every header file already includes this one.
+   Get the definitions of all the appropriate `__stub_FUNCTION' symbols.
+   <gnu/stubs.h> contains `#define __stub_FUNCTION' when FUNCTION is a stub
+   that will always return failure (and set errno to ENOSYS).  */
+#include <gnu/stubs.h>
+# 402 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\features.h" 3 4
+# 1 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\gnu\\stubs.h" 1 3 4
+/* This file is automatically generated.
+   This file selects the right generated file of `__stub_FUNCTION' macros
+   based on the architecture being compiled for.  */
+
+
+
+#include <gnu/stubs-soft.h>
+# 7 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\gnu\\stubs.h" 3 4
+# 1 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\gnu\\stubs-soft.h" 1 3 4
+/* This file is automatically generated.
+   It defines a symbol `__stub_FUNCTION' for each function
+   in the C library which is a stub, meaning it will fail
+   every time called, usually setting errno to ENOSYS.  */
+# 8 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\gnu\\stubs.h" 2 3 4
+# 403 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\features.h" 2 3 4
+# 26 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdint.h" 2 3 4
+#include <bits/wchar.h>
+# 26 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdint.h" 3 4
+# 1 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\bits\\wchar.h" 1 3 4
+/* wchar_t type related definitions.
+   Copyright (C) 2000-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+
+
+
+
+/* The fallback definitions, for when __WCHAR_MAX__ or __WCHAR_MIN__
+   are not defined, give the right value and type as long as both int
+   and wchar_t are 32-bit types.  Adding L'\0' to a constant value
+   ensures that the type is correct; it is necessary to use (L'\0' +
+   0) rather than just L'\0' so that the type in C++ is the promoted
+   version of wchar_t rather than the distinct wchar_t type itself.
+   Because wchar_t in preprocessor #if expressions is treated as
+   intmax_t or uintmax_t, the expression (L'\0' - 1) would have the
+   wrong value for WCHAR_MAX in such expressions and so cannot be used
+   to define __WCHAR_MAX in the unsigned case.  */
+# 27 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdint.h" 2 3 4
+#include <bits/wordsize.h>
+# 27 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdint.h" 3 4
+# 1 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\bits\\wordsize.h" 1 3 4
+/* Copyright (C) 1999-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+# 28 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdint.h" 2 3 4
+
+/* Exact integral types.  */
+
+/* Signed.  */
+
+/* There is some amount of overlap with <sys/types.h> as known by inet code */
+
+
+typedef signed char int8_t;
+typedef short int int16_t;
+typedef int int32_t;
+
+
+
+__extension__
+typedef long long int int64_t;
+
+
+
+/* Unsigned.  */
+typedef unsigned char uint8_t;
+typedef unsigned short int uint16_t;
+
+typedef unsigned int uint32_t;
+
+
+
+
+
+__extension__
+typedef unsigned long long int uint64_t;
+
+
+
+/* Small types.  */
+
+/* Signed.  */
+typedef signed char int_least8_t;
+typedef short int int_least16_t;
+typedef int int_least32_t;
+
+
+
+__extension__
+typedef long long int int_least64_t;
+
+
+/* Unsigned.  */
+typedef unsigned char uint_least8_t;
+typedef unsigned short int uint_least16_t;
+typedef unsigned int uint_least32_t;
+
+
+
+__extension__
+typedef unsigned long long int uint_least64_t;
+
+
+
+/* Fast types.  */
+
+/* Signed.  */
+typedef signed char int_fast8_t;
+
+
+
+
+
+typedef int int_fast16_t;
+typedef int int_fast32_t;
+__extension__
+typedef long long int int_fast64_t;
+
+
+/* Unsigned.  */
+typedef unsigned char uint_fast8_t;
+
+
+
+
+
+typedef unsigned int uint_fast16_t;
+typedef unsigned int uint_fast32_t;
+__extension__
+typedef unsigned long long int uint_fast64_t;
+
+
+
+/* Types for `void *' pointers.  */
+# 125 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdint.h" 3 4
+typedef int intptr_t;
+
+
+typedef unsigned int uintptr_t;
+
+
+
+/* Largest integral types.  */
+
+
+
+
+__extension__
+typedef long long int intmax_t;
+__extension__
+typedef unsigned long long int uintmax_t;
+# 152 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdint.h" 3 4
+/* Limits of integral types.  */
+
+/* Minimum of signed integral types.  */
+
+
+
+
+/* Maximum of signed integral types.  */
+
+
+
+
+
+/* Maximum of unsigned integral types.  */
+
+
+
+
+
+
+/* Minimum of signed integral types having a minimum size.  */
+
+
+
+
+/* Maximum of signed integral types having a minimum size.  */
+
+
+
+
+
+/* Maximum of unsigned integral types having a minimum size.  */
+
+
+
+
+
+
+/* Minimum of fast signed integral types having a minimum size.  */
+# 200 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdint.h" 3 4
+/* Maximum of fast signed integral types having a minimum size.  */
+# 211 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdint.h" 3 4
+/* Maximum of fast unsigned integral types having a minimum size.  */
+# 223 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdint.h" 3 4
+/* Values to test for integral types holding `void *' pointer.  */
+# 235 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdint.h" 3 4
+/* Minimum for largest signed integral type.  */
+
+/* Maximum for largest signed integral type.  */
+
+
+/* Maximum for largest unsigned integral type.  */
+
+
+
+/* Limits of other integer types.  */
+
+/* Limits of `ptrdiff_t' type.  */
+# 255 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdint.h" 3 4
+/* Limits of `sig_atomic_t'.  */
+
+
+
+/* Limit of `size_t' type.  */
+
+
+
+
+
+
+/* Limits of `wchar_t'.  */
+
+/* These constants might also be defined in <wchar.h>.  */
+
+
+
+
+/* Limits of `wint_t'.  */
+
+
+
+/* Signed.  */
+# 287 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdint.h" 3 4
+/* Unsigned.  */
+# 297 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdint.h" 3 4
+/* Maximal type.  */
+# 10 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\lib\\gcc\\arm-unknown-linux-gnueabi\\4.8.3\\include\\stdint.h" 2 3 4
+# 28 "C:/TEMP/MJPEG/src/application/ApplicationDefinitions.h" 2
+# 38 "C:/TEMP/MJPEG/src/application/ApplicationDefinitions.h"
+//#define IMAGE_SAVER_EN 1
+
+
+
+struct vld_metrics {
+ unsigned int block_count;
+ uint64_t time_start;
+};
+# 12 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp" 2
+#include "SpaceDisplay.h"
+# 12 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceDisplay.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+
+#include "SpaceDisplayImpl.h"
+# 16 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceDisplay.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceDisplayImpl.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+
+#include <stdarg.h>
+# 16 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceDisplayImpl.h"
+# 1 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\lib\\gcc\\arm-unknown-linux-gnueabi\\4.8.3\\include\\stdarg.h" 1 3 4
+/* Copyright (C) 1989-2013 Free Software Foundation, Inc.
+
+This file is part of GCC.
+
+GCC is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3, or (at your option)
+any later version.
+
+GCC is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+Under Section 7 of GPL version 3, you are granted additional
+permissions described in the GCC Runtime Library Exception, version
+3.1, as published by the Free Software Foundation.
+
+You should have received a copy of the GNU General Public License and
+a copy of the GCC Runtime Library Exception along with this program;
+see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+<http://www.gnu.org/licenses/>.  */
+
+/*
+ * ISO C Standard:  7.15  Variable arguments  <stdarg.h>
+ */
+# 36 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\lib\\gcc\\arm-unknown-linux-gnueabi\\4.8.3\\include\\stdarg.h" 3 4
+/* Define __gnuc_va_list.  */
+
+
+
+typedef __builtin_va_list __gnuc_va_list;
+
+
+/* Define the standard macros for the user,
+   if this invocation was from the user program.  */
+# 55 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\lib\\gcc\\arm-unknown-linux-gnueabi\\4.8.3\\include\\stdarg.h" 3 4
+/* Define va_list, if desired, from __gnuc_va_list. */
+/* We deliberately do not define va_list when called from
+   stdio.h, because ANSI C says that stdio.h is not supposed to define
+   va_list.  stdio.h needs to have access to that data type, 
+   but must not use that name.  It should use the name __gnuc_va_list,
+   which is safe because it is reserved for the implementation.  */
+# 85 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\lib\\gcc\\arm-unknown-linux-gnueabi\\4.8.3\\include\\stdarg.h" 3 4
+/* The macro _VA_LIST_ is the same thing used by this file in Ultrix.
+   But on BSD NET2 we must not test or define or undef it.
+   (Note that the comments in NET 2's ansi.h
+   are incorrect for _VA_LIST_--see stdio.h!)  */
+
+/* The macro _VA_LIST_DEFINED is used in Windows NT 3.5  */
+
+/* The macro _VA_LIST is used in SCO Unix 3.2.  */
+
+/* The macro _VA_LIST_T_H is used in the Bull dpx2  */
+
+/* The macro __va_list__ is used by BeOS.  */
+
+typedef __gnuc_va_list va_list;
+# 17 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceDisplayImpl.h" 2
+
+
+extern "C" {
+
+
+extern int (*SpacePrint)(const char *format, ...);
+extern int (*SpacevPrint)(const char *format, va_list ptrarg);
+extern int (*SpaceFlush)(void * stream);
+
+int SpacePrintError(const char* fileName, unsigned long fileLine, const char* instanceName, const char* messageFormat, ...);
+
+int SpacePrintWarning(const char* instanceName, const char* messageFormat, ...);
+
+int SpacePrintVerbose(const char* instanceName, const char* messageFormat, ...);
+
+
+}
+
+
+
+
+
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 17 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceDisplay.h" 2
+
+// Params: const char* instanceName, const char* messageFormat, ...)
+
+
+
+// Params: const char* instanceName, const char* messageFormat, ...)
+
+
+
+// Params: bool verbose, const char* instanceName, const char* messageFormat, ...)
+
+
+
+
+
+
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 13 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp" 2
+#include "SpaceTypes.h"
+# 13 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceTypes.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+# 119 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceTypes.h"
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 14 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp" 2
+
+//#define NB_FRAMES 100
+
+PERF_MONITOR::PERF_MONITOR(sc_core::sc_module_name name, double period, sc_core::sc_time_unit unit, unsigned char id, unsigned char priority, bool verbose)
+:SpaceBaseModule(name, period, unit, id, priority, verbose) {
+ SpaceThread(static_cast<void (sc_module::* )(void)>(&MODULE_NAME::thread));
+}
+
+void PERF_MONITOR::thread(void) {
+ double m_cumulative_througput = 0.0;
+ unsigned long m_cumulative = 0;
+ throughput_if* m_throughput;
+
+  m_throughput = new genx_throughput();
+
+
+
+
+ unsigned long perfCommand;
+ unsigned long frameCnt = 1;
+
+ SpacePrint("PERF_MONITOR\n");
+ while(1) {
+  ModuleRead(18, SPACE_BLOCKING, &perfCommand);
+
+  if (perfCommand == 0xFFFF){
+   m_throughput->reset();
+  }
+
+  if (perfCommand == 0x4FFF8){
+   throughput_stat stat = m_throughput->get_throughput();
+   double delta = stat.delta_time;
+   m_cumulative_througput+=stat.throughput;
+   SpacePrint("Took %f seconds to decode last frame\n", delta);
+   SpacePrint("That is %f frames/second\n", stat.throughput);
+   SpacePrint("Average is %f frames/second\n", m_cumulative_througput/(double)(++m_cumulative));
+  }
+
+  if (perfCommand == 0x0){
+   break;
+  }
+ }
+ delete m_throughput;
+ SpacePrint("PERF_MONITOR exits\n");
+}

@@ -1,0 +1,47 @@
+{
+  "type" : "record",
+  "name" : "MonitoringEngineInfo",
+  "namespace" : "com.spacecodesign.s2.domain.config.generation.hw",
+  "fields" : [ {
+    "name" : "isMonitoringActive",
+    "type" : "boolean"
+  }, {
+    "name" : "dllFileName",
+    "type" : "string"
+  }, {
+    "name" : "monitoringPathDirectory",
+    "type" : "string"
+  }, {
+    "name" : "Components",
+    "type" : {
+      "type" : "array",
+      "items" : {
+        "type" : "record",
+        "name" : "Component",
+        "fields" : [ {
+          "name" : "instance_name",
+          "type" : "string"
+        }, {
+          "name" : "id",
+          "type" : "int"
+        } ]
+      }
+    }
+  }, {
+    "name" : "MemorySizes",
+    "type" : {
+      "type" : "array",
+      "items" : {
+        "type" : "record",
+        "name" : "MemorySize",
+        "fields" : [ {
+          "name" : "id",
+          "type" : "int"
+        }, {
+          "name" : "size",
+          "type" : "long"
+        } ]
+      }
+    }
+  } ]
+}

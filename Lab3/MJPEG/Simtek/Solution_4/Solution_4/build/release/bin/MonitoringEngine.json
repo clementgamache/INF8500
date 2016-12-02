@@ -1,0 +1,127 @@
+{
+  "isMonitoringActive" : false,
+  "dllFileName" : "",
+  "monitoringPathDirectory" : "C:/TEMP/MJPEG/Simtek/Solution_4/Solution_4/build/monitoring",
+  "Components" : [ {
+    "instance_name" : "ISSAdapter1",
+    "id" : 8
+  }, {
+    "instance_name" : "armCortexA91_DDR_InterfaceRange1",
+    "id" : 4
+  }, {
+    "instance_name" : "AMBA_AXIBus_LT1",
+    "id" : 3
+  }, {
+    "instance_name" : "armCortexA91",
+    "id" : 0
+  }, {
+    "instance_name" : "armCortexA91.core0",
+    "id" : 1
+  }, {
+    "instance_name" : "armCortexA91.core1",
+    "id" : 2
+  }, {
+    "instance_name" : "RegisterFile1",
+    "id" : 10
+  }, {
+    "instance_name" : "XilinxBRAM1",
+    "id" : 11
+  }, {
+    "instance_name" : "BRAM_LOADER1",
+    "id" : 12
+  }, {
+    "instance_name" : "COLOR_METRICS1",
+    "id" : 13
+  }, {
+    "instance_name" : "DEMUX1",
+    "id" : 14
+  }, {
+    "instance_name" : "IDCT1",
+    "id" : 15
+  }, {
+    "instance_name" : "IQZZ1",
+    "id" : 17
+  }, {
+    "instance_name" : "LIBU1",
+    "id" : 18
+  }, {
+    "instance_name" : "PERF_MONITOR1",
+    "id" : 19
+  }, {
+    "instance_name" : "VLD1",
+    "id" : 20
+  }, {
+    "instance_name" : "XilinxPIC1",
+    "id" : 9
+  }, {
+    "instance_name" : "simulation_timer1",
+    "id" : 21
+  }, {
+    "instance_name" : "DebugModule1",
+    "id" : 16
+  }, {
+    "instance_name" : "M_TFMasterAdapter1",
+    "id" : 0
+  }, {
+    "instance_name" : "M_TFMasterAdapter2",
+    "id" : 0
+  }, {
+    "instance_name" : "S_TFSlaveAdapter1",
+    "id" : 10
+  }, {
+    "instance_name" : "S_TFSlaveAdapter2",
+    "id" : 11
+  }, {
+    "instance_name" : "S_TFSlaveAdapter3",
+    "id" : 9
+  }, {
+    "instance_name" : "S_TFSlaveAdapter4",
+    "id" : 8
+  }, {
+    "instance_name" : "S_TFSlaveAdapter5",
+    "id" : 21
+  }, {
+    "instance_name" : "S_TFSlaveAdapter6",
+    "id" : 16
+  }, {
+    "instance_name" : "ISSAdapter1_FIFO_0",
+    "id" : 22
+  }, {
+    "instance_name" : "ISSAdapter1_FIFO_1",
+    "id" : 23
+  }, {
+    "instance_name" : "ISSAdapter1_FIFO_2",
+    "id" : 24
+  }, {
+    "instance_name" : "ISSAdapter1_FIFO_3",
+    "id" : 25
+  }, {
+    "instance_name" : "ISSAdapter1_FIFO_4",
+    "id" : 26
+  }, {
+    "instance_name" : "ISSAdapter1_FIFO_5",
+    "id" : 27
+  }, {
+    "instance_name" : "ISSAdapter1_FIFO_6",
+    "id" : 28
+  }, {
+    "instance_name" : "ISSAdapter1_FIFO_7",
+    "id" : 29
+  }, {
+    "instance_name" : "ISSAdapter1_FIFO_8",
+    "id" : 30
+  }, {
+    "instance_name" : "ISSAdapter1_FIFO_9",
+    "id" : 31
+  }, {
+    "instance_name" : "ISSAdapter1_FIFO_10",
+    "id" : 32
+  } ],
+  "MemorySizes" : [ {
+    "id" : 10,
+    "size" : 131072
+  }, {
+    "id" : 11,
+    "size" : 131072
+  } ]
+}

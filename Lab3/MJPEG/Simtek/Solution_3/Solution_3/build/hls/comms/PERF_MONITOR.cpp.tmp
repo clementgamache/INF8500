@@ -1,0 +1,510 @@
+# 1 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdc-predef.h" 1 3 4
+/* Copyright (C) 1991-2014 Free Software Foundation, Inc.
+   This file is part of the GNU C Library.
+
+   The GNU C Library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   The GNU C Library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with the GNU C Library; if not, see
+   <http://www.gnu.org/licenses/>.  */
+
+
+
+
+/* This header is separate from features.h so that the compiler can
+   include it implicitly at the start of every compilation.  It must
+   not itself include <features.h> or any other header that includes
+   <features.h> because the implicit include comes before any feature
+   test macros that may be defined in a source file before it first
+   explicitly includes a system header.  GCC knows the name of this
+   header in order to preinclude it.  */
+
+/* glibc's intent is to support the IEC 559 math functionality, real
+   and complex.  If the GCC (4.9 and later) predefined macros
+   specifying compiler intent are available, use them to determine
+   whether the overall intent is to support these features; otherwise,
+   presume an older compiler has intent to support these features and
+   define these macros by default.  */
+# 52 "c:\\logiciels\\spacestudio-2.8.0-rc5-pl3\\toolchains\\arm-unknown-linux-gnueabi\\arm-unknown-linux-gnueabi\\sysroot\\usr\\include\\stdc-predef.h" 3 4
+/* wchar_t uses ISO/IEC 10646 (2nd ed., published 2011-03-15) /
+   Unicode 6.0.  */
+
+
+/* We do not support C11 <threads.h>.  */
+# 1 "<command-line>" 2
+# 1 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp"
+///////////////////////////////////////////////////////////////////////////////
+//
+// Filename : PERF_MONITOR.cpp
+//
+// Creation date : Tue May 24 15:30:15 EDT 2016
+//
+///////////////////////////////////////////////////////////////////////////////
+#include "PERF_MONITOR.h"
+# 8 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp"
+# 1 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.h" 1
+///////////////////////////////////////////////////////////////////////////////
+//
+// Filename : PERF_MONITOR.h
+//
+// Creation date : Tue May 24 15:30:15 EDT 2016
+//
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+#include "SpaceBaseModule.h"
+# 11 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/SpaceBaseModule.h" 1
+
+
+
+#include "SpaceTypes.h"
+# 4 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/SpaceBaseModule.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceTypes.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+///\class     SPACE_STATUS
+///
+///\brief     Status returned by the Space Codesign engined for end users
+///
+///////////////////////////////////////////////////////////////////////////////
+static const unsigned char SPACE_OK = 0; ///< Tells the operation was completed successfully
+static const unsigned char SPACE_ERROR = 1; ///< Tells the operation did not complete and simulation 
+static const unsigned char SPACE_EMPTY = 2; ///< may be corrupted or may fail
+static const unsigned char SPACE_FULL = 3; ///> Tells the operation cannot be completed because no storage is available
+static const unsigned char SPACE_NOT_CONNECTED = 99; ///< REports an access to an unconnected port
+
+typedef unsigned char eSpaceStatus;
+
+
+///////////////////////////////////////////////////////////////////////////////
+///\enum     SpaceChannelStatusStr
+///
+///\brief    Statuses returned when using Space Interface Methods
+///////////////////////////////////////////////////////////////////////////////
+typedef enum
+{
+/**** for platform ****/
+ SPACE_CHANNEL_OK = 0, // Was successfully completed from end to end
+ SPACE_CHANNEL_FULL = 1, // Channel is FULL and write operation was cancelled
+ SPACE_CHANNEL_EMPTY = 2, // Nothing to read and data pointer is invalid
+ SPACE_CHANNEL_UNUSED_STATUS_1 = 3, // Currently unused status code
+
+ SPACE_CHANNEL_UNUSED_STATUS_2 = 4, // Currently unused status code
+    SPACE_CHANNEL_ADDR_OUT_OF_RANGE = 5, // Destination Address was out of range
+
+ SPACE_CHANNEL_ERROR = 6, // An unrecoverable error from which the system cannot recover occured
+          // Users receiving this error are recommended to stop the simulation
+ SPACE_CHANNEL_TERMINATOR_ACCESS = 7, // An unbound port was accessed. 
+          // Users receiving this error are recommended to stop the simulation
+
+    SPACE_CHANNEL_MSG_SIZE_ERROR = 8, // Platform: Unsupported Size of Request
+    SPACE_CHANNEL_NO_QUEUE_AVAILABLE = 9, // SW:No queue available in FreeQueuePool (in the case of writing)
+ SPACE_CHANNEL_UNUSED_STATUS_4 = 10, // Currently unused status code
+
+ /**** for RTL ****/
+ SPACE_CHANNEL_IN_PROGRESS = 11, // Request currently being processed
+
+
+/**** NEW ****/
+
+ SPACE_UNKNOWN_DESTINATION = 12,
+ SPACE_INVALID_OFFSET = 13
+
+
+} eSpaceChannelStatus;
+
+
+///////////////////////////////////////////////////////////////////////////////
+///\enum     eSpaceTransactionType
+///
+///\brief    SPACE Transaction options. 
+///\note     Updated with unsigned long type. 
+///////////////////////////////////////////////////////////////////////////////
+static const unsigned long SPACE_NON_BLOCKING = 0; ///< Indicates the transaction is non blocking
+static const unsigned long SPACE_NO_WAIT = 0;
+static const unsigned long SPACE_BLOCKING = 0xFFFFFFFF; ///< Indicates the transaction is blocking
+static const unsigned long SPACE_WAIT_FOREVER = 0xFFFFFFFF;
+
+typedef unsigned long eSpaceTransactionType;
+
+
+///////////////////////////////////////////////////////////////////////////////
+///\class     enum eSpaceComponentType
+///
+///\brief     Descriptor found in eSpaceComponentType representing either
+///           a module or a device 
+///////////////////////////////////////////////////////////////////////////////
+typedef enum
+{
+    SPACE_UNREGISTERED = 0,
+    SPACE_MODULE = 1,
+    SPACE_DEVICE = 2,
+    //SPACE_MODULE_ADAPTER = 3,
+ SPACE_ISS_ADAPTER = 4,
+ SPACE_REGISTER_FILE = 5,
+ SPACE_SLAVE_BRIDGE = 6
+} eSpaceComponentType;
+
+
+///////////////////////////////////////////////////////////////////////////////
+///\enum      eSpaceCommunicationType
+///
+///\brief      SPACE communication types
+///////////////////////////////////////////////////////////////////////////////
+typedef enum
+{
+ SPACE_MODULE_READ = 0,
+ SPACE_MODULE_WRITE = 1,
+ SPACE_DEVICE_READ = 2,
+ SPACE_DEVICE_WRITE = 3,
+ SPACE_REGISTER_READ = 4,
+ SPACE_REGISTER_WRITE = 5,
+ SPACE_UNKNOWN_COMMUNICATION = 0xFF
+} eSpaceCommunicationType;
+
+
+
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 5 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/SpaceBaseModule.h" 2
+
+#include "systemc"
+# 6 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/SpaceBaseModule.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/systemc" 1
+
+
+
+// Nothing from SystemC proper
+namespace sc_core {
+}
+# 7 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/SpaceBaseModule.h" 2
+
+class SpaceBaseModule;
+# 12 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.h" 2
+
+#include "systemc"
+# 13 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/systemc" 1
+# 14 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.h" 2
+
+#include "genx_throughput.h"
+# 15 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.h"
+# 1 "C:/TEMP/MJPEG/import/src/genx_throughput.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///
+///         Space Codesign System Inc. - (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2012
+///
+///         No authorization to modify or use this file for
+///         commercial purposes without prior written consentement
+///         of its author(s)
+///
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+#include "throughput_if.h"
+# 14 "C:/TEMP/MJPEG/import/src/genx_throughput.h"
+# 1 "C:/TEMP/MJPEG/import/src/throughput_if.h" 1
+
+
+
+typedef struct {
+ double throughput;
+ double delta_time;
+} throughput_stat;
+
+class throughput_if {
+ public:
+
+  virtual ~throughput_if() {}
+  virtual throughput_stat get_throughput() = 0;
+  virtual void reset() = 0;
+};
+# 15 "C:/TEMP/MJPEG/import/src/genx_throughput.h" 2
+
+class genx_throughput: public throughput_if {
+
+ public:
+  genx_throughput();
+  virtual ~genx_throughput();
+
+  virtual throughput_stat get_throughput();
+  virtual void reset() { m_throughput->reset(); }
+
+ private:
+  throughput_if* m_throughput;
+};
+# 16 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.h" 2
+#include "simtek_throughput.h"
+# 16 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.h"
+# 1 "C:/TEMP/MJPEG/import/src/simtek_throughput.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///
+///         Space Codesign System Inc. - (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2012
+///
+///         No authorization to modify or use this file for
+///         commercial purposes without prior written consentement
+///         of its author(s)
+///
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+#include "throughput_if.h"
+
+class PERF_MONITOR;
+class simtek_throughput: public throughput_if {
+
+ public:
+  simtek_throughput(PERF_MONITOR*);
+  virtual ~simtek_throughput();
+
+  virtual throughput_stat get_throughput();
+  virtual void reset() { m_throughput->reset(); }
+  unsigned long long get_timer_value();
+
+ private:
+  throughput_if* m_throughput;
+  PERF_MONITOR* m_proxy;
+};
+# 17 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.h" 2
+
+class PERF_MONITOR: public SpaceBaseModule {
+ public:
+
+     SC_HAS_PROCESS(PERF_MONITOR);
+
+     PERF_MONITOR(sc_core::sc_module_name name, double period, sc_core::sc_time_unit unit, unsigned char id, unsigned char priority, bool verbose);
+
+     void thread(void);
+     unsigned long long get_timer_value();
+};
+# 9 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp" 2
+
+#include "PlatformDefinitions.h"
+# 10 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp"
+# 1 "temp/PlatformDefinitions.h" 1
+// ***********************************************************************
+//
+// Filename: 		PlatformDefinitions.h
+//
+// Level:			Simtek
+//
+// Author: 			SpaceStudio generation engine
+//
+// Warning: 
+// ========
+//			1) This file content will be overwritten by the next generation process.
+//			2) All the ID must be unique to the current project.
+//
+// ***********************************************************************
+
+
+
+
+//Level of technology of this platform
+
+
+// User's Module ID
+# 32 "temp/PlatformDefinitions.h"
+// User's Device(and Wrapper) ID
+
+
+// User's Module priority
+# 45 "temp/PlatformDefinitions.h"
+// User's Device(and Wrapper) priority
+
+// SpaceComponents IDs
+# 61 "temp/PlatformDefinitions.h"
+// SpaceComponents PRIOs
+
+
+
+
+// Memories' size
+# 11 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp" 2
+#include "ApplicationDefinitions.h"
+# 11 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp"
+# 1 "C:/TEMP/MJPEG/src/application/ApplicationDefinitions.h" 1
+// ***********************************************************************
+//
+// Filename: 		ApplicationDefinitions.h
+//
+// Author: 			SpaceStudio generation engine
+//
+// Creation date: 	Fri Oct 07 11:16:52 EDT 2016
+//
+// Warning: 		This file will not be overwritten by the SpaceStudio 
+//					generation engine.
+//
+// Note:			This file is automatically added in a new project or in an 
+//					existing project only if this file is not already present.
+//					Otherwise, this file remains untouched by the SpaceStudio 
+//					generation engine.  So this is a good place to declare 
+//					variables that are specific to your application and that 
+//					you need to share between your configurations.
+//
+// ***********************************************************************
+
+
+
+
+
+
+
+#include <stdint.h>
+# 27 "C:/TEMP/MJPEG/src/application/ApplicationDefinitions.h"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/stdint.h" 1
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+typedef char int8_t;
+typedef unsigned char uint8_t;
+typedef short int16_t;
+typedef unsigned short uint16_t;
+typedef int int32_t;
+typedef unsigned int uint32_t;
+typedef long long int64_t;
+typedef unsigned long long uint64_t;
+typedef char int_least8_t;
+typedef unsigned char uint_least8_t;
+typedef short int_least16_t;
+typedef unsigned short uint_least16_t;
+typedef int int_least32_t;
+typedef unsigned int uint_least32_t;
+typedef long long int_least64_t;
+typedef unsigned long long uint_least64_t;
+typedef char int_fast8_t;
+typedef unsigned char uint_fast8_t;
+typedef short int_fast16_t;
+typedef unsigned short uint_fast16_t;
+typedef int int_fast32_t;
+typedef unsigned int uint_fast32_t;
+typedef long long int_fast64_t;
+typedef unsigned long long uint_fast64_t;
+typedef int* intptr_t;
+typedef unsigned int* uintptr_t;
+typedef long long intmax_t;
+typedef unsigned long long uintmax_t;
+
+
+
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 28 "C:/TEMP/MJPEG/src/application/ApplicationDefinitions.h" 2
+# 38 "C:/TEMP/MJPEG/src/application/ApplicationDefinitions.h"
+//#define IMAGE_SAVER_EN 1
+
+
+
+struct vld_metrics {
+ unsigned int block_count;
+ uint64_t time_start;
+};
+# 12 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp" 2
+#include "SpaceDisplay.h"
+# 12 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceStudio/src/main/resources/a/cs/headers/sw/SpaceDisplay.h" 1
+
+
+
+// Nothing
+# 13 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp" 2
+#include "SpaceTypes.h"
+# 13 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp"
+# 1 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceTypes.h" 1
+///////////////////////////////////////////////////////////////////////////////
+///
+///         Space Libraries - Space Codesign Systems Inc. (http://www.spacecodesign.com)
+///         (c) All Rights Reserved. 2005-2014                            
+///                                                                       
+///         This file contains proprietary, confidential information of Space Codesign 
+///         Systems Inc. and may be used only pursuant to the terms of a valid license 
+///         agreement with Space Codesign Systems Inc. For more information about licensing,
+///         please contact your Space Codesign representative. 
+/// 
+///////////////////////////////////////////////////////////////////////////////
+# 119 "C:/Logiciels/SpaceStudio-2.8.0-RC5-PL3/SpaceLib/release/sw/include/SpaceTypes.h"
+/* (c) Space Codesign Systems Inc. 2005-2014 */
+# 14 "C:/TEMP/MJPEG/src/module/PERF_MONITOR.cpp" 2
+
+//#define NB_FRAMES 100
+
+PERF_MONITOR::PERF_MONITOR(sc_core::sc_module_name name, double period, sc_core::sc_time_unit unit, unsigned char id, unsigned char priority, bool verbose)
+:SpaceBaseModule(name, period, unit, id, priority, verbose) {
+ SC_THREAD(thread);
+}
+
+void PERF_MONITOR::thread(void) {
+ double m_cumulative_througput = 0.0;
+ unsigned long m_cumulative = 0;
+ throughput_if* m_throughput;
+
+
+
+  m_throughput = new simtek_throughput(this);
+
+
+ unsigned long perfCommand;
+ unsigned long frameCnt = 1;
+
+ SpacePrint("PERF_MONITOR\n");
+ while(1) {
+  ModuleRead(18, SPACE_BLOCKING, &perfCommand);
+
+  if (perfCommand == 0xFFFF){
+   m_throughput->reset();
+  }
+
+  if (perfCommand == 0x4FFF8){
+   throughput_stat stat = m_throughput->get_throughput();
+   double delta = stat.delta_time;
+   m_cumulative_througput+=stat.throughput;
+   SpacePrint("Took %f seconds to decode last frame\n", delta);
+   SpacePrint("That is %f frames/second\n", stat.throughput);
+   SpacePrint("Average is %f frames/second\n", m_cumulative_througput/(double)(++m_cumulative));
+  }
+
+  if (perfCommand == 0x0){
+   break;
+  }
+ }
+ delete m_throughput;
+ SpacePrint("PERF_MONITOR exits\n");
+}

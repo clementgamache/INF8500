@@ -1,0 +1,36 @@
+###################################################################
+##
+## Filename       : register_file_v2_1_0.mpd
+## Description    : Microprocessor Peripheral Definition
+##
+###################################################################
+##  Copyright 2011 - Space Codesign Systems, Inc.
+##  All rights reserved.s
+###################################################################
+
+BEGIN register_file
+
+## Peripheral Options
+OPTION IPTYPE = PERIPHERAL
+OPTION IMP_NETLIST = TRUE
+OPTION HDL = VHDL
+OPTION ARCH_SUPPORT_MAP = (OTHERS=DEVELOPMENT)
+OPTION IP_GROUP = USER
+
+## Generics for VHDL or Parameters for Verilog
+PARAMETER DWIDTH = 32, DT = INTEGER
+PARAMETER GEN_ID = 0, DT = INTEGER
+PARAMETER NB_REGISTER = 5, DT = INTEGER
+PARAMETER N_READ = 5, DT = INTEGER
+PARAMETER N_WRITE = 5, DT = INTEGER
+
+## Ports
+
+PORT WriteData_MUX = "", DIR = I, VEC = [0:N_WRITE*DWIDTH-1]
+PORT WriteValid_MUX = "", DIR = I, VEC = [0:N_WRITE-1]
+PORT ReadData_MUX = "", DIR = O, VEC = [0:N_READ*DWIDTH-1]
+
+PORT Clk = "", DIR = I
+PORT Reset = "", DIR = I
+
+END

@@ -1,0 +1,37 @@
+{
+  "type" : "record",
+  "name" : "ModuleSlaveAdapterFIFOInfo",
+  "namespace" : "com.spacecodesign.s2.domain.config.generation.hw",
+  "fields" : [ {
+    "name" : "triggerType",
+    "type" : {
+      "type" : "enum",
+      "name" : "TriggerType",
+      "namespace" : "com.spacecodesign.s2.domain.analysis.fifo",
+      "symbols" : [ "EDGE", "LEVEL" ]
+    }
+  }, {
+    "name" : "readPeriod",
+    "type" : {
+      "type" : "record",
+      "name" : "ClockPeriod",
+      "fields" : [ {
+        "name" : "period",
+        "type" : "int"
+      }, {
+        "name" : "unit",
+        "type" : {
+          "type" : "enum",
+          "name" : "TimeUnit",
+          "symbols" : [ "SC_FS", "SC_PS", "SC_NS", "SC_US", "SC_MS", "SC_SEC" ]
+        }
+      } ]
+    }
+  }, {
+    "name" : "writePeriod",
+    "type" : "ClockPeriod"
+  }, {
+    "name" : "latency",
+    "type" : "int"
+  } ]
+}

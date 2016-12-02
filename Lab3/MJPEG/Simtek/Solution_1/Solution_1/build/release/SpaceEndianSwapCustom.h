@@ -1,0 +1,13 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Filename : SpaceEndianSwapCustom.h
+//
+// Author : SpaceStudio generation engine
+//
+// Warning: This file content will be overwritten by the next generation process.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+#include "ApplicationDefinitions.h"
+#include "PlatformDefinitions.h"
+#include "jpeg.h"

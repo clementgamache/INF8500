@@ -1,0 +1,36 @@
+################################################################################
+#
+# Filename : VLD.cpp.mingw.dat
+#
+# Author : SpaceStudio generation engine
+#
+# Warning: This file content will be overwritten by the next generation process.
+#
+################################################################################
+MODULE_READ	14	true	-1	68	unsigned+int
+MODULE_READ	14	true	-1	74	unsigned+int
+MODULE_READ	14	true	-1	88	unsigned+int
+MODULE_READ	14	true	-1	103	int
+MODULE_READ	14	true	-1	109	unsigned+int
+MODULE_READ	14	true	-1	110	unsigned+int
+MODULE_READ	14	true	-1	111	unsigned+int
+MODULE_READ	14	true	-1	115	unsigned+int
+MODULE_READ	14	true	-1	125	unsigned+int
+MODULE_READ	14	true	-1	137	unsigned+int
+MODULE_READ	14	true	-1	151	unsigned+int
+MODULE_READ	14	true	-1	152	unsigned+int
+MODULE_READ	14	true	-1	154	unsigned+int
+MODULE_READ	14	true	-1	155	unsigned+int
+MODULE_READ	14	true	-1	156	unsigned+int
+MODULE_READ	14	true	-1	164	unsigned+int
+MODULE_READ	14	true	-1	165	unsigned+int
+MODULE_READ	14	true	-1	171	unsigned+int
+MODULE_READ	14	true	-1	172	unsigned+int
+MODULE_READ	14	true	-1	179	unsigned+int
+MODULE_READ	14	true	-1	180	unsigned+int
+MODULE_READ	14	true	-1	181	unsigned+int
+MODULE_READ	14	true	-1	255	unsigned+int
+MODULE_READ	14	true	-1	304	unsigned+int
+DEVICE_READ	11	false	4	415	unsigned+char
+MODULE_READ	14	true	-1	445	unsigned+long
+MODULE_WRITE	17	true	128	630	short
