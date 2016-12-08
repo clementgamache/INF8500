@@ -212,8 +212,8 @@ void VLD::thread(void)
 		///
 		/// Ends the module computation
 		///
-		if (uiCommand == END_APPLICATION)
-			break;
+		/*if (uiCommand == END_APPLICATION)
+			break;*/
 #endif
 	}
 	SpacePrint("VLD Exits\n");

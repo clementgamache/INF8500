@@ -74,7 +74,7 @@ void DEMUX::thread(void)
 
 	unsigned long end = 0;
 	RegisterWrite(REGISTERS_ID, 1, &end);
-	while(!end)
+	while(1/*!end*/)
 	{
 		find_info();
 
